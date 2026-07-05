@@ -40,49 +40,54 @@
 % ── Trang bìa ────────────────────────────────────────────────────
 \begin{titlepage}
   \centering
-  % Đặt file logo (vd: logo.png) cùng thư mục với report.tex rồi bỏ comment dòng dưới
-  % \includegraphics[width=3.5cm]{logo.png}\\[0.8cm]
-  {\Large\bfseries TÊN TRƯỜNG ĐẠI HỌC}\\[0.3cm]
-  {\large Khoa Công nghệ Thông tin}\\[3cm]
+  {\large\bfseries ĐẠI HỌC BÁCH KHOA HÀ NỘI}\\[0.2cm]
+  {\normalsize TRƯỜNG CÔNG NGHỆ THÔNG TIN VÀ TRUYỀN THÔNG}\\[0.5cm]
+  \includegraphics[width=5cm]{logo.jpg}\\[0.8cm]
 
   \rule{\linewidth}{0.8pt}\\[0.5cm]
-  {\LARGE\bfseries Ứng dụng Học Tăng cường vào Thuật toán\\[0.3cm]
-   Tìm kiếm Lân cận Diện rộng Thích ứng\\[0.3cm]
-   cho Bài toán Thiết kế Lãnh thổ}\\[0.4cm]
-  {\large\itshape Báo cáo Thực nghiệm}\\[0.3cm]
-  \rule{\linewidth}{0.8pt}\\[2.5cm]
+  {\LARGE\bfseries Ứng dụng thuật toán ALNS và học tăng cường  cho Bài toán Thiết kế Lãnh thổ}\\[0.4cm]
+  {\large\itshape Báo cáo Project III}\\[0.3cm]
+  \rule{\linewidth}{0.8pt}\\[2cm]
 
-  \begin{minipage}{0.48\textwidth}
-    \begin{flushleft}
-      \textbf{Tác giả:}\\[0.2cm]
-      Trần Đức Thái\\
-      \texttt{thaitd@vietnamlab.vn}
-    \end{flushleft}
-  \end{minipage}
+  \begin{tabular}{ll}
+    \textbf{Sinh viên:}              & Trần Đức Thái \\[0.3cm]
+    \textbf{Giảng viên hướng dẫn:}  & Nguyễn Văn Sơn \\[0.3cm]
+    \textbf{Mã học phần:}           & IT3940 \\
+  \end{tabular}
 
   \vfill
   {\large Tháng 7, 2026}
 \end{titlepage}
 
-% ── Tóm tắt (trang riêng) ────────────────────────────────────────
+
+% ── Lời nói đầu ──────────────────────────────────────────────────
 \newpage
 \thispagestyle{plain}
-\begin{abstract}
-Báo cáo này trình bày kết quả thực nghiệm của thuật toán \textbf{ALNS kết hợp
-Học Tăng cường dạng Repair (ALNS+RL Repair)} áp dụng cho Bài toán Thiết kế Lãnh thổ
-(District and Territory Design Problem -- DTDP).
-Tác nhân RL sử dụng mô hình Q-learning tuyến tính để học chính sách gán node vào
-territory trong giai đoạn \emph{repair} của Adaptive Large Neighbourhood Search (ALNS).
-Thực nghiệm được thực hiện trên 120 đồ thị thuộc hai họ: TGraph (đồ thị phẳng ngẫu
-nhiên, 500--700 nút) và GGraph (đồ thị lưới $27\!\times\!27$ đến $33\!\times\!33$,
-ba cấu hình depot).
-Kết quả cho thấy ALNS+RL Repair tìm được nghiệm \emph{khả thi hoàn toàn} trên GGraph
-($\text{Infeasibility} \approx 0$) nhưng gặp khó khăn về tính khả thi trên TGraph
-(infeasibility trung bình $\approx 0{,}21$).
-Chất lượng mục tiêu thua VNS baseline khoảng 18\% trên TGraph và 16\% trên GGraph.
-Tác nhân generalize tốt về \emph{tính khả thi} trên GGraph nhưng chưa học được chiến
-lược tối ưu hóa diameter cạnh tranh với VNS.
-\end{abstract}
+\section*{Lời nói đầu}
+\addcontentsline{toc}{section}{Lời nói đầu}
+
+Báo cáo này trình bày kết quả nghiên cứu và thực nghiệm của học phần Project III
+(IT3940), thuộc chương trình đào tạo của Trường Công nghệ Thông tin và Truyền thông,
+Đại học Bách Khoa Hà Nội.
+
+Nội dung báo cáo tập trung vào việc ứng dụng kỹ thuật \textbf{Học Tăng cường (Reinforcement Learning)}
+vào giai đoạn sửa chữa nghiệm (repair) của thuật toán Tìm kiếm Lân cận Diện rộng
+Thích ứng (ALNS) nhằm giải quyết Bài toán Thiết kế Lãnh thổ (DTDP).
+Toàn bộ thực nghiệm được thiết kế, lập trình và phân tích bởi sinh viên trong quá
+trình thực hiện học phần.
+
+Em xin gửi lời cảm ơn chân thành đến \textbf{thầy Nguyễn Văn Sơn} đã tận tình
+hướng dẫn, định hướng nghiên cứu và hỗ trợ em trong suốt quá trình thực hiện
+học phần này. Những góp ý và chỉ dẫn của thầy đã giúp em hiểu sâu hơn về các
+phương pháp metaheuristic cũng như cách ứng dụng học máy vào bài toán tối ưu
+tổ hợp.
+
+\vspace{1cm}
+\begin{flushright}
+  \textit{Hà Nội, tháng 7 năm 2026}\\[0.3cm]
+  \textit{Sinh viên}\\[0.5cm]
+  Trần Đức Thái
+\end{flushright}
 
 % ── Mục lục (trang riêng) ────────────────────────────────────────
 \newpage
@@ -91,191 +96,398 @@ lược tối ưu hóa diameter cạnh tranh với VNS.
 
 % =================================================================
 \section{Giới thiệu}
+\label{sec:intro}
 % =================================================================
 
-Bài toán Thiết kế Lãnh thổ (DTDP) xuất hiện trong nhiều bài toán thực tiễn như
-phân vùng logistics, quản lý hành chính, và thiết kế mạng lưới dịch vụ.
-Mục tiêu là phân hoạch tập nút của một đồ thị thành $k$ lãnh thổ cân bằng, sao
-cho đường kính tối đa trong các lãnh thổ được tối thiểu hóa.
+\subsection{Bối cảnh và Động lực}
 
-Các thuật toán metaheuristic như Variable Neighbourhood Search (VNS) và Adaptive
-Large Neighbourhood Search (ALNS) đã cho thấy hiệu quả tốt trên bài toán này.
-Báo cáo nghiên cứu liệu \textbf{Học Tăng cường (RL)} có thể cải thiện ALNS bằng
-cách học chính sách sửa chữa nghiệm (repair) thông minh hơn chiến lược greedy
-truyền thống hay không.
+Bài toán Thiết kế Lãnh thổ (District/Territory Design Problem -- DTDP) là một
+bài toán tối ưu tổ hợp xuất hiện rộng rãi trong thực tiễn: phân vùng giao hàng
+logistics, thiết kế tuyến bán hàng, phân chia khu vực hành chính, quản lý lưới
+điện, và tổ chức mạng lưới y tế cộng đồng.
+Bài toán yêu cầu phân hoạch tập các đơn vị địa lý (biểu diễn bằng nút trên đồ thị)
+thành $k$ lãnh thổ \emph{cân bằng} về tải công việc, đồng thời \emph{nhỏ gọn}
+về mặt địa lý (tối thiểu hóa đường kính lãnh thổ).
 
-Tác nhân RL dùng \emph{Q-learning tuyến tính} để quyết định gán mỗi node bị xóa
-vào territory nào trong quá trình repair, thay vì dùng heuristic greedy cố định.
-Hai họ benchmark được sử dụng:
+Độ khó của DTDP đến từ mâu thuẫn giữa hai yêu cầu: cân bằng tải (khối lượng công
+việc của mỗi lãnh thổ xấp xỉ nhau) và nhỏ gọn địa lý (đường kính lãnh thổ nhỏ).
+Về mặt lý thuyết tính toán, DTDP thuộc lớp NP-hard, khiến tìm nghiệm tối ưu
+chính xác chỉ khả thi với instance rất nhỏ (vài chục nút).
+
+\subsection{Hướng Tiếp cận}
+
+\textbf{Variable Neighbourhood Search (VNS)} là baseline metaheuristic mạnh
+trên DTDP, sử dụng local search nhiều lân cận để cải thiện nghiệm.
+\textbf{Adaptive Large Neighbourhood Search (ALNS)} là framework linh hoạt hơn,
+cho phép tích hợp nhiều chiến lược phá--sửa nghiệm (destroy--repair) và điều
+chỉnh thích ứng.
+
+Gần đây, \textbf{Học Tăng cường (Reinforcement Learning -- RL)} đã cho thấy tiềm
+năng trong việc học chính sách heuristic tự động cho bài toán tối ưu tổ hợp,
+đặc biệt trong các bài toán routing và scheduling.
+Ý tưởng kết hợp ALNS với RL theo hướng \emph{học chính sách repair} -- thay vì
+dùng heuristic greedy cố định -- là hướng nghiên cứu mới trên DTDP.
+
+\subsection{Đóng góp của Báo cáo}
+
+Báo cáo này trình bày và đánh giá thuật toán \textbf{ALNS+RL Repair}:
 \begin{itemize}
-  \item \textbf{TGraph} -- 30 đồ thị phẳng ngẫu nhiên (500, 600, 700 nút).
-  \item \textbf{GGraph} -- 90 đồ thị lưới (486, 600, 726 nút) với ba cấu hình
-        vị trí depot: Center, Corners, Diagonal.
+  \item Tích hợp tác nhân Q-learning tuyến tính vào giai đoạn repair của ALNS,
+        thay thế heuristic greedy cố định bằng chính sách học được.
+  \item Thiết kế vector đặc trưng 8 chiều mô tả trạng thái gán node--territory,
+        kết hợp thông tin cân bằng tải, đường kính, và vị trí hình học.
+  \item Đánh giá thực nghiệm toàn diện trên 120 instances (30 TGraph + 90 GGraph),
+        so sánh với VNS baseline.
+  \item Phân tích khả năng generalize của agent sang instance lớn hơn và cấu
+        hình depot khác tập train.
 \end{itemize}
+
+\subsection{Cấu trúc Báo cáo}
+
+Phần~\ref{sec:problem} phát biểu bài toán DTDP.
+Phần~\ref{sec:method} mô tả chi tiết thuật toán ALNS+RL Repair.
+Phần~\ref{sec:experiment} trình bày thiết kế thực nghiệm.
+Phần~\ref{sec:results} và~\ref{sec:discussion} phân tích kết quả và thảo luận.
+Phần~\ref{sec:conclusion} kết luận và hướng cải tiến.
 
 % =================================================================
 \section{Phát biểu Bài toán}
+\label{sec:problem}
 % =================================================================
 
 \subsection{Định nghĩa DTDP}
 
-Cho đồ thị $G = (V, E)$ với $|V| = n$ nút.
-Mỗi nút $v \in V$ mang các thuộc tính: khối lượng công việc $w_v$, số khách
-hàng $c_v$, và nhu cầu $d_v$.
-DTDP tìm phân hoạch $\Pi = \{D_1, D_2, \ldots, D_k\}$ của $V$ thành $k$ lãnh thổ sao cho:
+Cho đồ thị vô hướng liên thông $G = (V, E)$, trong đó $V = \{v_1, \ldots, v_n\}$
+là tập $n$ nút (đơn vị địa lý) và $E \subseteq V \times V$ là tập cạnh biểu diễn
+kết nối địa lý. Mỗi nút $v \in V$ mang ba thuộc tính hoạt động:
+khối lượng công việc $w_v$, số khách hàng $c_v$, và nhu cầu $d_v$.
+
+Khoảng cách giữa hai nút $u, v$ là độ dài đường đi ngắn nhất $\text{dist}(u,v)$
+(tính theo số cạnh). Đường kính của tập con $S \subseteq V$:
+\[
+  \operatorname{diam}(S) = \max_{u,v \in S} \text{dist}(u,v).
+\]
+
+\textbf{Bài toán DTDP}: Tìm phân hoạch $\Pi = \{D_1, D_2, \ldots, D_k\}$ của $V$
+thành $k$ lãnh thổ không rỗng, không giao nhau, sao cho:
 
 \begin{enumerate}
-  \item \textbf{Tối thiểu hóa} $F(\Pi) = \max_{j}\,\operatorname{diam}(D_j)$,
-        đường kính lớn nhất trong các lãnh thổ.
-  \item \textbf{Ràng buộc cân bằng}: với mỗi lãnh thổ $D_j$,
+  \item \textbf{Mục tiêu -- Tối thiểu hóa đường kính lớn nhất:}
+        $\displaystyle\min_{\Pi}\; F(\Pi) = \max_{j=1}^{k}\,\operatorname{diam}(D_j).$
+
+  \item \textbf{Ràng buộc cân bằng tải}: với mỗi lãnh thổ $D_j$ và mỗi thuộc
+        tính $a \in \mathcal{A} = \{\text{workload}, \text{n\_customers}, \text{demand}\}$:
         \[
-          \left|\frac{w(D_j)}{\bar{w}} - 1\right| \leq \delta,
-          \quad \bar{w} = \frac{\sum_v w_v}{k},
+          \left|\frac{A(D_j, a)}{\bar{a}} - 1\right| \leq \delta,
+          \quad \bar{a} = \frac{\sum_{v \in V} a(v)}{k},
         \]
-        trong đó $\delta = 0{,}05$ là độ lệch cho phép (5\%).
+        trong đó $A(D_j, a) = \sum_{v \in D_j} a(v)$ là tổng thuộc tính $a$
+        của lãnh thổ $D_j$, và $\delta = 0{,}05$ là ngưỡng lệch cho phép (5\%).
 \end{enumerate}
+
+\subsection{Hàm Vi phạm}
+
+Mức độ vi phạm ràng buộc cân bằng được đo bằng hàm vi phạm toàn cục:
+\[
+  G(\Pi) = \sum_{j=1}^{k} \sum_{a \in \mathcal{A}}
+           \max\!\left(0,\; \left|\frac{A(D_j, a)}{\bar{a}} - 1\right| - \delta\right).
+\]
+Nghiệm khả thi hoàn toàn khi và chỉ khi $G(\Pi) = 0$.
 
 \subsection{Hàm Merit}
 
-Để cân bằng giữa tối ưu hóa diameter và đảm bảo tính khả thi, hàm merit được
-định nghĩa:
+Trong quá trình tìm kiếm, tối ưu hóa đơn lẻ $F(\Pi)$ hoặc $G(\Pi)$ dẫn đến
+bế tắc cục bộ. Hàm merit kết hợp cả hai:
 \[
   M(\Pi, \lambda) = \lambda \cdot \frac{F(\Pi)}{D_G} + (1-\lambda) \cdot G(\Pi),
 \]
-trong đó $D_G$ là đường kính của toàn đồ thị, $G(\Pi)$ là tổng vi phạm cân
-bằng tải của tất cả các lãnh thổ, và $\lambda = 0{,}7$ là trọng số.
+trong đó $D_G = \operatorname{diam}(G)$ là đường kính toàn đồ thị (hằng số
+chuẩn hóa) và $\lambda = 0{,}7$ là trọng số ưu tiên tối ưu hóa diameter.
+Giá trị $\lambda = 0{,}7$ dành 70\% trọng số cho diameter và 30\% cho tính khả thi.
+
+\subsection{Độ phức tạp}
+
+DTDP là NP-hard ngay cả với $k = 2$. Với $n$ nút và $k$ lãnh thổ, không gian
+nghiệm có kích thước $k^n$, khiến tìm kiếm kiệt sức chỉ khả thi với $n \leq 20$.
+Với $n$ từ 486 đến 726 nút trong thực nghiệm này, metaheuristic là lựa chọn tất yếu.
 
 % =================================================================
 \section{Phương pháp}
+\label{sec:method}
 % =================================================================
 
-\subsection{Tổng quan ALNS}
+\subsection{Tổng quan Kiến trúc}
 
-Thuật toán ALNS hoạt động theo vòng lặp \textbf{destroy--repair}:
+Thuật toán ALNS+RL Repair hoạt động theo vòng lặp destroy--repair với ba thành
+phần chính: (1) tập các chiến lược \emph{destroy} lựa chọn ngẫu nhiên,
+(2) tác nhân RL thực hiện \emph{repair}, và (3) tiêu chí chấp nhận
+Simulated Annealing. Quy trình tổng thể:
+
 \begin{enumerate}
-  \item \textbf{Destroy}: xóa $k$ node khỏi nghiệm hiện tại theo một trong ba
-        chiến lược:
-        \begin{itemize}
-          \item \emph{Random}: xóa ngẫu nhiên $k$ node.
-          \item \emph{Worst Diameter}: xóa các node thuộc đường kính lớn nhất
-                và lân cận của chúng.
-          \item \emph{Infeasible}: xóa ngẫu nhiên $k$ node từ territory vi phạm
-                cân bằng nặng nhất.
-        \end{itemize}
-  \item \textbf{Repair}: gán lại các node bị xóa vào các territory.
-  \item \textbf{Chấp nhận}: dùng tiêu chí Simulated Annealing để chấp nhận hoặc
-        từ chối nghiệm mới.
+  \item Xây dựng nghiệm ban đầu $\Pi_0$ bằng greedy constructive.
+  \item Lặp $N = 300$ vòng:
+    \begin{enumerate}
+      \item Chọn ngẫu nhiên một chiến lược destroy, loại bỏ $k_{\text{remove}}$
+            nút để được tập $R$ và nghiệm tạm $\Pi_{\text{tmp}}$.
+      \item Tác nhân RL lần lượt gán từng nút trong $R$ vào territory, tạo ra
+            $\Pi'$ (và cập nhật trọng số nếu đang train).
+      \item So sánh $M(\Pi')$ với $M(\Pi_{\text{cur}})$ theo tiêu chí SA:
+            nếu chấp nhận thì $\Pi_{\text{cur}} \leftarrow \Pi'$.
+      \item Cập nhật $\Pi_{\text{best}}$ nếu $M(\Pi') < M(\Pi_{\text{best}})$.
+      \item Làm lạnh nhiệt độ: $T \leftarrow T \cdot \rho$.
+    \end{enumerate}
+  \item Trả về $\Pi_{\text{best}}$.
 \end{enumerate}
 
+\subsection{Khởi tạo Nghiệm}
+
+Nghiệm ban đầu được xây dựng bằng phương pháp \emph{greedy constructive}:
+chọn ngẫu nhiên $k$ nút làm centroid, sau đó gán mỗi nút còn lại vào lãnh thổ
+có centroid gần nhất (theo đường đi ngắn nhất trên đồ thị).
+
+\subsection{Các Chiến lược Destroy}
+
+Ở mỗi vòng lặp, một trong ba chiến lược destroy được chọn đồng đều ngẫu nhiên
+để loại bỏ $k_{\text{remove}} = 10$ nút:
+
+\begin{enumerate}
+  \item \textbf{Random Destroy}: Chọn ngẫu nhiên đều $k_{\text{remove}}$ nút
+        từ toàn bộ $V$. Đơn giản nhất, đảm bảo đa dạng hóa tìm kiếm.
+
+  \item \textbf{Worst Diameter Destroy}: Xác định lãnh thổ $D^* = \arg\max_j
+        \operatorname{diam}(D_j)$. Tìm cặp nút $(u^*, v^*)$ tạo nên đường kính
+        đó, sau đó loại bỏ $u^*, v^*$ và các nút lân cận của chúng trong $D^*$
+        cho đến khi đủ $k_{\text{remove}}$ nút.
+        Chiến lược này tập trung trực tiếp vào việc giảm $F(\Pi)$.
+
+  \item \textbf{Infeasible Destroy}: Xác định lãnh thổ $D^* = \arg\max_j
+        G_j(\Pi)$ vi phạm cân bằng nặng nhất, sau đó loại bỏ ngẫu nhiên
+        $k_{\text{remove}}$ nút từ $D^*$. Chiến lược này nhắm vào cải thiện
+        tính khả thi $G(\Pi)$.
+\end{enumerate}
+
+\subsection{Tiêu chí Chấp nhận Simulated Annealing}
+
+Sau khi repair xong, nghiệm mới $\Pi'$ được so sánh với nghiệm hiện tại $\Pi_{\text{cur}}$:
+\begin{itemize}
+  \item Nếu $M(\Pi') < M(\Pi_{\text{cur}})$: luôn chấp nhận.
+  \item Nếu $M(\Pi') \geq M(\Pi_{\text{cur}})$: chấp nhận với xác suất
+        $p = \exp\!\left(-\dfrac{M(\Pi') - M(\Pi_{\text{cur}})}{T}\right)$.
+\end{itemize}
+Nhiệt độ giảm dần: $T \leftarrow T \cdot \rho$ sau mỗi vòng lặp, với
+$T_{\text{init}} = 0{,}05$ và $\rho = 0{,}995$.
+Cơ chế SA cho phép thoát khỏi cực tiểu cục bộ bằng cách chấp nhận một số nghiệm
+tệ hơn với xác suất giảm dần theo thời gian.
+
 \subsection{RL trong giai đoạn Repair}
+\label{subsec:rl}
 
-Thay vì dùng heuristic greedy cố định, tác nhân RL học cách gán node vào territory
-tối ưu. Với mỗi node $v$ cần gán, tác nhân quan sát \textbf{vector đặc trưng} mô
-tả trạng thái của từng territory và chọn territory tốt nhất.
+\subsubsection{Quy trình Repair}
 
-\subsubsection{Không gian trạng thái}
+Sau bước destroy, tập $R$ gồm các nút cần gán lại. Tác nhân RL quyết định từng bước:
+với mỗi nút $v \in R$ (theo thứ tự ngẫu nhiên), tác nhân quan sát vector đặc
+trưng $s_{v,d}$ của từng territory $d$, chọn territory $a^* = \arg\max_d Q(s_{v,d}, d)$
+theo chiến lược $\varepsilon$-greedy, gán $v$ vào $a^*$, nhận phần thưởng
+$r = M_{\text{trước}} - M_{\text{sau}}$, và cập nhật trọng số (nếu đang train).
 
-Vector trạng thái $s_{v,d}$ mô tả việc gán node $v$ vào territory $d$, gồm 8 đặc trưng:
-\[
-  s_{v,d} = \left[
-    \underbrace{\text{excess}_{d,w},\; \text{excess}_{d,c},\; \text{excess}_{d,q}}_{\text{dư thừa hoạt động (3)}},\;
-    \underbrace{\text{diam}_d / D_G}_{\text{đường kính (1)}},\;
-    \underbrace{w_v/\bar{w},\; c_v/\bar{c},\; q_v/\bar{q}}_{\text{thuộc tính node (3)}},\;
-    \underbrace{\bar{d}(v, D_d)}_{\text{khoảng cách (1)}}
-  \right],
-\]
-trong đó $\text{excess}_{d,a} = (A_{d,a} - \bar{a})/\bar{a}$ là độ dư thừa hoạt động
-$a$ của territory $d$.
+\subsubsection{Không gian Trạng thái}
 
-\subsubsection{Hành động và phần thưởng}
+Với mỗi cặp (node $v$, territory $d$), vector trạng thái $s_{v,d} \in \mathbb{R}^8$
+mô tả ``tình hình'' nếu gán $v$ vào $d$:
+
+\begin{table}[H]
+  \centering
+  \caption{Các đặc trưng trong vector trạng thái $s_{v,d}$}
+  \begin{tabular}{clp{8cm}}
+    \toprule
+    \# & Đặc trưng & Ý nghĩa \\
+    \midrule
+    1 & $\text{excess}_{d,w}$ & Độ dư thừa workload của territory $d$:
+        $\bigl(A(D_d,w)-\bar{w}\bigr)/\bar{w}$. Dương = đã quá tải. \\
+    2 & $\text{excess}_{d,c}$ & Độ dư thừa n\_customers của territory $d$. \\
+    3 & $\text{excess}_{d,q}$ & Độ dư thừa demand của territory $d$. \\
+    4 & $\text{diam}_d / D_G$ & Đường kính chuẩn hóa của territory $d$. \\
+    5 & $w_v / \bar{w}$ & Workload của node $v$ chuẩn hóa theo trung bình. \\
+    6 & $c_v / \bar{c}$ & N\_customers của node $v$ chuẩn hóa. \\
+    7 & $q_v / \bar{q}$ & Demand của node $v$ chuẩn hóa. \\
+    8 & $\bar{d}(v, D_d)$ & Khoảng cách trung bình từ $v$ đến các nút trong $D_d$. \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Đặc trưng excess âm có nghĩa territory còn ``chỗ trống'' (có thể nhận thêm node
+mà không vi phạm). Đặc trưng khoảng cách $\bar{d}(v, D_d)$ thấp khi $v$ nằm
+trong vùng lân cận địa lý của $D_d$, giúp agent ưu tiên gán node vào territory gần.
+
+\subsubsection{Hành động và Phần thưởng}
 
 \textbf{Hành động}: chọn index territory $a \in \{0, 1, \ldots, k-1\}$ để gán node.
 
-\textbf{Phần thưởng}: cải thiện tức thời của hàm merit sau khi gán:
+\textbf{Phần thưởng}: cải thiện tức thời của hàm merit:
 \[
-  r = M_{\text{trước}} - M_{\text{sau}}.
+  r = M(\Pi_{\text{trước}}) - M(\Pi_{\text{sau}}).
 \]
+Phần thưởng dương khi gán làm giảm merit (tốt hơn), âm khi làm tăng.
 
-\subsubsection{Mô hình Q-learning tuyến tính}
+\subsubsection{Mô hình Q-learning Tuyến tính}
 
-Q-value được xấp xỉ tuyến tính: $Q(s_{v,a}, a) = \mathbf{w}_a^\top s_{v,a}$,
-trong đó mỗi territory $a$ có vector trọng số $\mathbf{w}_a \in \mathbb{R}^8$ riêng.
-
-Cập nhật TD(0):
+Q-value được xấp xỉ tuyến tính:
 \[
-  \mathbf{w}_a \leftarrow \mathbf{w}_a + \alpha \left[
-    r + \gamma \max_{b} Q(s'_{v',b}, b) - Q(s_{v,a}, a)
-  \right] s_{v,a},
+  Q(s_{v,d}, d) = \mathbf{w}_d^\top s_{v,d},
 \]
-với learning rate $\alpha = 0{,}01$, discount factor $\gamma = 0{,}9$,
-$\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
+trong đó mỗi territory $d$ có vector trọng số riêng $\mathbf{w}_d \in \mathbb{R}^8$.
+Tổng số tham số: $k \times 8 = 80$.
 
-\subsection{Tham số thực nghiệm}
+\textbf{Cập nhật TD(0)}: sau khi gán node $v$ vào territory $a$ và quan sát
+phần thưởng $r$ và trạng thái tiếp theo $s'_{v'}$ (node kế trong $R$):
+\[
+  \delta_{\text{TD}} = r + \gamma \max_{b} Q(s'_{v',b}, b) - Q(s_{v,a}, a),
+\]
+\[
+  \mathbf{w}_a \leftarrow \mathbf{w}_a + \alpha \cdot \delta_{\text{TD}} \cdot s_{v,a},
+\]
+với $\alpha = 0{,}01$ (learning rate) và $\gamma = 0{,}9$ (discount factor).
+Chỉ $\mathbf{w}_a$ của territory được chọn bị cập nhật.
+
+\textbf{Chiến lược $\varepsilon$-Greedy}:
+với xác suất $\varepsilon$ chọn territory ngẫu nhiên (khám phá), với xác suất
+$1-\varepsilon$ chọn territory có Q-value cao nhất (khai thác).
+$\varepsilon$ giảm dần sau mỗi vòng lặp ALNS:
+$\varepsilon \leftarrow \max(\varepsilon_{\min},\; \varepsilon \cdot \varepsilon_{\text{decay}})$,
+với $\varepsilon_{\text{init}} = 1{,}0$, $\varepsilon_{\text{decay}} = 0{,}995$,
+$\varepsilon_{\min} = 0{,}05$.
+Khi đánh giá: $\varepsilon = \varepsilon_{\min}$ (gần greedy thuần).
+
+\subsection{Lưu và Nạp Mô hình}
+
+Sau khi train xong, toàn bộ trọng số $\{\mathbf{w}_d\}_{d=1}^k$ và giá trị
+$\varepsilon$ hiện tại được lưu vào file \texttt{.npz} (numpy binary format).
+Khi đánh giá, model được nạp lại và agent chạy với $\varepsilon = \varepsilon_{\min}$
+mà không cập nhật trọng số. Cơ chế này cho phép resume training từ checkpoint
+và transfer learning sang instance có cùng số territory $k = 10$.
+
+\subsection{Tham số Thuật toán}
 
 \begin{table}[H]
   \centering
   \caption{Tham số ALNS+RL Repair}
-  \begin{tabular}{lll}
+  \begin{tabular}{llll}
     \toprule
-    Tham số & Giá trị & Ghi chú \\
+    Nhóm & Tham số & Giá trị & Ghi chú \\
     \midrule
-    $\lambda$ & 0{,}7 & Trọng số merit \\
-    $\delta$ & 0{,}05 & Độ lệch cân bằng cho phép \\
-    $k$ (districts) & 10 & Số lãnh thổ \\
+    \multirow{4}{*}{ALNS} &
     $k_{\text{remove}}$ & 10 & Số node xóa mỗi bước destroy \\
-    Số vòng lặp ALNS & 300 & Mỗi instance \\
+    & Số vòng lặp ($N$) & 300 & Mỗi instance \\
+    & $T_{\text{init}}$ & 0{,}05 & Nhiệt độ SA ban đầu \\
+    & $\rho$ & 0{,}995 & Hệ số làm lạnh SA \\
+    \midrule
+    \multirow{3}{*}{Bài toán} &
+    $\lambda$ & 0{,}7 & Trọng số merit (diameter) \\
+    & $\delta$ & 0{,}05 & Ngưỡng lệch cân bằng (5\%) \\
+    & $k$ & 10 & Số lãnh thổ \\
+    \midrule
+    \multirow{5}{*}{RL} &
     $\alpha$ & 0{,}01 & Learning rate \\
-    $\gamma$ & 0{,}90 & Discount factor \\
-    $\varepsilon_{\min}$ & 0{,}05 & Epsilon tối thiểu \\
+    & $\gamma$ & 0{,}90 & Discount factor \\
+    & $\varepsilon_{\text{init}}$ & 1{,}00 & Epsilon ban đầu \\
+    & $\varepsilon_{\text{decay}}$ & 0{,}995 & Hệ số giảm epsilon \\
+    & $\varepsilon_{\min}$ & 0{,}05 & Epsilon tối thiểu \\
     \bottomrule
   \end{tabular}
 \end{table}
 
 % =================================================================
 \section{Thiết kế Thực nghiệm}
+\label{sec:experiment}
 % =================================================================
 
-\subsection{Tập dữ liệu}
+\subsection{Tập Dữ liệu}
+
+Thực nghiệm sử dụng hai họ benchmark với đặc điểm cấu trúc khác nhau.
+
+\subsubsection{TGraph -- Đồ thị Phẳng Ngẫu nhiên}
+
+TGraph gồm 30 đồ thị phẳng ngẫu nhiên sinh bằng thuật toán Delaunay triangulation,
+chia thành ba nhóm kích thước: $n \in \{500, 600, 700\}$ nút, mỗi nhóm 10 instances
+(G0--G9). Cấu trúc không đều, không có đối xứng hình học, mật độ cạnh biến thiên.
+Đây là loại đồ thị thách thức do tính không đồng nhất về phân bố nút và cạnh.
+Agent được train \emph{chỉ} trên planar500 (G0--G9), sau đó đánh giá trên cả ba
+nhóm để kiểm tra generalization theo kích thước.
+
+\subsubsection{GGraph -- Đồ thị Lưới}
+
+GGraph gồm 90 đồ thị lưới (grid graph) với ba kích thước:
+$27\!\times\!27$ (486 nút), $30\!\times\!30$ (600 nút), $33\!\times\!33$ (726 nút).
+Mỗi kích thước có ba biến thể theo vị trí depot:
+\textbf{Center} (depot ở trung tâm), \textbf{Corners} (depot ở bốn góc),
+\textbf{Diagonal} (depot phân bố theo đường chéo).
+Mỗi biến thể có 10 instances, tổng $3 \times 3 \times 10 = 90$ instances.
+Agent được train \emph{chỉ} trên Center486 (G0--G9), sau đó đánh giá trên tất cả
+90 instances -- bao gồm depot khác và kích thước lớn hơn.
 
 \begin{table}[H]
   \centering
   \caption{Tổng quan benchmark}
-  \begin{tabular}{llccc}
+  \begin{tabular}{llcccc}
     \toprule
-    Họ & Tập & Kích thước & Instances & Mục đích \\
+    Họ & Tập & Kích thước & Instances & Train & Eval \\
     \midrule
-    \multirow{4}{*}{TGraph} & planar500 & 500 nút & 10 & Train + Eval \\
-                             & planar600 & 600 nút & 10 & Eval (size $+$20\%) \\
-                             & planar700 & 700 nút & 10 & Eval (size $+$40\%) \\
+    \multirow{3}{*}{TGraph} & planar500 & 500 nút & 10 & \checkmark & \checkmark \\
+                             & planar600 & 600 nút & 10 & & \checkmark \\
+                             & planar700 & 700 nút & 10 & & \checkmark \\
     \midrule
-    \multirow{3}{*}{GGraph 27$\times$27} & Center486   & 486 nút & 10 & Train + Eval \\
-                                          & Corners486  & 486 nút & 10 & Eval (depot mới) \\
-                                          & Diagonal486 & 486 nút & 10 & Eval (depot mới) \\
-    \multirow{3}{*}{GGraph 30$\times$30} & Center600   & 600 nút & 10 & Eval \\
-                                          & Corners600  & 600 nút & 10 & Eval \\
-                                          & Diagonal600 & 600 nút & 10 & Eval \\
-    \multirow{3}{*}{GGraph 33$\times$33} & Center726   & 726 nút & 10 & Eval \\
-                                          & Corners726  & 726 nút & 10 & Eval \\
-                                          & Diagonal726 & 726 nút & 10 & Eval \\
+    \multirow{9}{*}{GGraph} & Center486   & 486 nút & 10 & \checkmark & \checkmark \\
+                             & Corners486  & 486 nút & 10 &  & \checkmark \\
+                             & Diagonal486 & 486 nút & 10 &  & \checkmark \\
+                             & Center600   & 600 nút & 10 &  & \checkmark \\
+                             & Corners600  & 600 nút & 10 &  & \checkmark \\
+                             & Diagonal600 & 600 nút & 10 &  & \checkmark \\
+                             & Center726   & 726 nút & 10 &  & \checkmark \\
+                             & Corners726  & 726 nút & 10 &  & \checkmark \\
+                             & Diagonal726 & 726 nút & 10 &  & \checkmark \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Quy trình}
+\subsection{Baseline -- VNS}
+
+Baseline so sánh là thuật toán \textbf{Variable Neighbourhood Search (VNS)} không
+có thành phần học máy, sử dụng local search nhiều lân cận (node reassignment và
+boundary swap). VNS luôn tạo ra nghiệm khả thi hoàn toàn trên TGraph ($G = 0$)
+và gần khả thi trên GGraph.
+
+\subsection{Quy trình Thực nghiệm}
 
 \begin{enumerate}
-  \item \textbf{Training TGraph}: train agent tuần tự trên planar500 G0--G9,
-        tích lũy kiến thức vào model \texttt{model\_tgraph.npz}.
-  \item \textbf{Eval TGraph}: dùng agent đã train, chạy với $\varepsilon =
-        \varepsilon_{\min}$ (greedy thuần) trên 30 instances.
-  \item \textbf{Training GGraph}: train agent trên Center486 G0--G9, lưu vào
-        \texttt{model\_ggraph.npz}.
-  \item \textbf{Eval GGraph}: đánh giá 90 instances (3 kích thước $\times$
-        3 depot $\times$ 10 instances).
+  \item \textbf{Training TGraph}: Khởi tạo agent mới ($\varepsilon = 1{,}0$).
+        Train tuần tự trên planar500 G0--G9, mỗi instance 300 vòng lặp ALNS.
+        Sau mỗi instance, lưu model vào \texttt{model\_tgraph.npz} (resume).
+
+  \item \textbf{Đánh giá TGraph}: Nạp \texttt{model\_tgraph.npz},
+        đặt $\varepsilon = 0{,}05$. Chạy ALNS 300 vòng (không cập nhật trọng số)
+        trên 30 instances. Ghi lại Objective và Infeasibility của $\Pi_{\text{best}}$.
+
+  \item \textbf{Training GGraph}: Tương tự, train trên Center486 G0--G9,
+        lưu vào \texttt{model\_ggraph.npz}.
+
+  \item \textbf{Đánh giá GGraph}: Nạp \texttt{model\_ggraph.npz},
+        đánh giá 90 instances.
 \end{enumerate}
+
+\subsection{Metrics Đánh giá}
+
+\begin{itemize}
+  \item \textbf{Objective (Obj)}: $F(\Pi_{\text{best}}) = \max_j \operatorname{diam}(D_j)$
+        của nghiệm tốt nhất. Nhỏ hơn là tốt hơn.
+  \item \textbf{Infeasibility (Inf)}: $G(\Pi_{\text{best}})$.
+        Bằng 0 khi nghiệm khả thi hoàn toàn.
+  \item \textbf{Gap (\%)}: $(F_{\text{ALNS}} - F_{\text{VNS}}) / F_{\text{VNS}} \times 100\%$.
+        Âm có nghĩa ALNS+RL tốt hơn VNS.
+\end{itemize}
 
 % =================================================================
 \section{Kết quả}
+\label{sec:results}
 % =================================================================
 
 \subsection{TGraph -- Đồ thị phẳng ngẫu nhiên}
@@ -289,11 +501,11 @@ $\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
     \multicolumn{2}{c}{ALNS+RL Repair} &
     \multicolumn{2}{c}{VNS Baseline} &
     \multirow{2}{*}{Gap Obj} &
-    \multirow{2}{*}{Nhận xét} \\
+    \multirow{2}{*}{Phân loại} \\
     \cmidrule(lr){2-3}\cmidrule(lr){4-5}
     & Obj & Inf & Obj & Inf & & \\
     \midrule
-    planar500 & 54{,}296 & 0{,}2351 & 47{,}641 & 0{,}0000 & $+$14{,}0\% & In-dist \\
+    planar500 & 54{,}296 & 0{,}2351 & 47{,}641 & 0{,}0000 & $+$14{,}0\% & In-distribution \\
     planar600 & 54{,}729 & 0{,}1967 & 47{,}709 & 0{,}0000 & $+$14{,}7\% & Size $+$20\% \\
     planar700 & 57{,}633 & 0{,}1890 & 46{,}016 & 0{,}0000 & $+$25{,}2\% & Size $+$40\% \\
     \midrule
@@ -303,16 +515,26 @@ $\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
   \end{tabular}
 \end{table}
 
-\textbf{Nhận xét:}
+\textbf{Phân tích:}
 \begin{itemize}
-  \item ALNS+RL Repair có infeasibility trung bình $\approx 0{,}21$, trong khi VNS
-        luôn tìm được nghiệm \emph{khả thi hoàn toàn} ($G = 0$).
-        Đây là điểm yếu nghiêm trọng của phương pháp đề xuất trên TGraph.
-  \item Objective gap tăng theo kích thước đồ thị: $+14\%$ (500 nút) $\to$
-        $+25{,}2\%$ (700 nút), cho thấy agent \emph{không generalize tốt} khi
-        graph lớn hơn trên TGraph.
-  \item Nguyên nhân có thể do cơ chế repair dạng node-by-node không đảm bảo
-        tính liên thông và cân bằng tải đồng thời khi graph có cấu trúc phức tạp.
+  \item \textbf{Tính khả thi -- vấn đề nghiêm trọng}: ALNS+RL Repair tạo ra nghiệm
+        vi phạm cân bằng tải trung bình Inf $\approx 0{,}21$ trên cả ba nhóm,
+        trong khi VNS luôn đạt $G = 0$. Nghiệm không khả thi là điểm yếu
+        nghiêm trọng nhất của phương pháp trên TGraph.
+
+  \item \textbf{Chất lượng objective}: Ngay cả khi bỏ qua infeasibility,
+        objective tệ hơn VNS từ $+14{,}0\%$ đến $+25{,}2\%$. VNS vừa đạt
+        objective tốt hơn \emph{vừa} đảm bảo tính khả thi hoàn toàn.
+
+  \item \textbf{Generalization theo kích thước}: Gap tăng rõ từ planar500
+        ($+14{,}0\%$) lên planar700 ($+25{,}2\%$). Agent được train trên 500
+        nút nhưng đánh giá trên 700 nút -- domain shift về kích thước khiến
+        phân bố đặc trưng thay đổi, agent không thích nghi được.
+
+  \item \textbf{Biến động giữa instances}: Chênh lệch lớn -- một số instances
+        có gap nhỏ (planar500\_G5: $+2{,}65$, planar600\_G1: $+3{,}32$) trong
+        khi một số khác rất cao (planar700\_G4: $+21{,}41$, planar500\_G3
+        Inf = $0{,}41$). Xem chi tiết tại Phụ lục~\ref{app:tgraph}.
 \end{itemize}
 
 \subsection{GGraph -- Đồ thị lưới}
@@ -325,9 +547,9 @@ $\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
     Kích thước & Depot &
     \multicolumn{2}{c}{ALNS+RL} &
     \multicolumn{2}{c}{VNS} &
-    Gap \\
+    Gap Obj \\
     \cmidrule(lr){3-4}\cmidrule(lr){5-6}
-    & & Obj & Inf & Obj & Inf & Obj \\
+    & & Obj & Inf & Obj & Inf & \\
     \midrule
     \multirow{3}{*}{27$\times$27 (486)} &
     Center   & 233{,}0 & 0{,}0000 & 218{,}8 & 0{,}0000 & $+$6{,}5\% \\
@@ -351,97 +573,195 @@ $\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
   \end{tabular}
 \end{table}
 
-\textbf{Nhận xét:}
+\textbf{Phân tích:}
 \begin{itemize}
-  \item \textbf{Tính khả thi}: ALNS+RL Repair gần như luôn tìm được nghiệm khả thi
-        trên GGraph (infeasibility $\approx 0$), thậm chí tốt hơn VNS ở một số nhóm
-        (Corners486, Diagonal486, Diagonal600, Diagonal726 có infeasibility VNS cao hơn).
-  \item \textbf{Depot trung tâm (Center)}: gap thấp nhất, $+6{,}5\%$ (486 nút) và
-        $+9{,}5\%$ (600 nút) -- cho thấy agent generalize tốt về kích thước
-        khi cấu hình depot giống tập train.
-  \item \textbf{Depot không quen (Corners, Diagonal)}: gap cao hơn ($+14$--$+26\%$),
-        đặc biệt Corners486 ($+26\%$) và Center726 ($+27{,}3\%$).
-        Agent chưa học được cách xử lý depot ở vị trí cực trị hiệu quả.
-  \item Một số instances riêng lẻ ALNS+RL \emph{tốt hơn} VNS (gap âm),
-        ví dụ Center486\_G0 ($-6$), Center486\_G2 ($-13$), Diagonal726\_G3 ($-48$).
+  \item \textbf{Tính khả thi vượt trội}: ALNS+RL Repair đạt Inf $\approx 0$ ở hầu
+        hết nhóm GGraph, thậm chí tốt hơn VNS ở nhiều cấu hình
+        (Diagonal486: ALNS Inf=0{,}0000 vs VNS Inf=0{,}0319;
+        Diagonal726: ALNS Inf=0{,}0000 vs VNS Inf=0{,}0199).
+
+  \item \textbf{Center depot -- generalize tốt nhất}: Gap thấp ở
+        Center486 ($+6{,}5\%$) và Center600 ($+9{,}5\%$), tăng đột biến ở
+        Center726 ($+27{,}3\%$). Kích thước $27\!\times\!27$ và $30\!\times\!30$
+        cạnh tranh tốt; $33\!\times\!33$ bắt đầu vượt ngưỡng generalization.
+
+  \item \textbf{Corners và Diagonal -- domain shift depot}: Gap cao hơn
+        ($+6{,}3\%$--$+26{,}0\%$) nhưng tính khả thi vẫn được đảm bảo tốt.
+        Agent học được ``core policy'' cân bằng tải không phụ thuộc depot,
+        nhưng chưa học được cách tối ưu diameter cho depot cực trị.
+
+  \item \textbf{Instances vượt VNS}: Center486\_G0 ($-6$), G1 ($-9$), G2 ($-13$),
+        G9 ($-24$); Diagonal486\_G1 ($-21$), G7 ($-25$).
+        Điều này xác nhận tiềm năng thực sự của ALNS+RL Repair trên GGraph Center.
 \end{itemize}
 
 % =================================================================
 \section{Thảo luận}
+\label{sec:discussion}
 % =================================================================
 
-\subsection{So sánh với VNS}
+\subsection{Tổng hợp So sánh}
 
 \begin{table}[H]
   \centering
-  \caption{Tổng hợp so sánh ALNS+RL Repair vs VNS}
-  \begin{tabular}{lccc}
+  \caption{So sánh ALNS+RL Repair vs VNS theo tiêu chí}
+  \begin{tabular}{lccl}
     \toprule
     Tiêu chí & ALNS+RL Repair & VNS & Nhận xét \\
     \midrule
-    Tính khả thi -- TGraph & \textcolor{red}{Kém} (Inf $\approx 0{,}21$) &
-    \textcolor{blue}{Tốt} (Inf $= 0$) & VNS tốt hơn \\
-    Tính khả thi -- GGraph & \textcolor{blue}{Tốt} (Inf $\approx 0$) &
-    \textcolor{blue}{Tốt} & Tương đương \\
+    Tính khả thi -- TGraph &
+    \textcolor{red}{Inf $\approx 0{,}21$} &
+    \textcolor{blue}{Inf $= 0$} & VNS tốt hơn rõ rệt \\
+    Tính khả thi -- GGraph &
+    \textcolor{blue}{Inf $\approx 0$} &
+    Inf $\leq 0{,}032$ & ALNS+RL tốt hơn \\
     Objective -- TGraph & $+17{,}9\%$ tệ hơn & Baseline & VNS tốt hơn \\
-    Objective -- GGraph Center & $+6{,}5$--$9{,}5\%$ tệ hơn & Baseline & Cạnh tranh \\
-    Objective -- GGraph Cross & $+13{,}6$--$27{,}3\%$ tệ hơn & Baseline & VNS tốt hơn \\
+    Objective -- GGraph Center 486/600 & $+6{,}5$--$9{,}5\%$ & Baseline & Cạnh tranh \\
+    Objective -- GGraph Center 726 & $+27{,}3\%$ & Baseline & VNS tốt hơn \\
+    Objective -- GGraph Corners/Diagonal & $+6{,}3$--$26{,}0\%$ & Baseline & Thường tệ hơn \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Phân tích nguyên nhân}
+\subsection{Phân tích Nguyên nhân}
 
-\paragraph{TGraph -- infeasibility cao.}
-Cơ chế repair node-by-node không có cơ chế đảm bảo tính cân bằng tải toàn cục.
-Mỗi lần gán, agent tối ưu hóa merit cục bộ nhưng không nhìn xa được hậu quả
-của toàn bộ quá trình repair. Trên TGraph với cấu trúc không đều, điều này dẫn
-đến mất cân bằng tích lũy.
+\subsubsection{TGraph -- Infeasibility cao}
 
-\paragraph{GGraph -- tốt hơn TGraph.}
-Cấu trúc lưới đều đặn của GGraph giúp agent dễ học pattern gán node hơn.
-Node trong lưới có vị trí hình học rõ ràng, khiến các đặc trưng khoảng cách
-và excess trong state vector trở nên có ý nghĩa hơn.
-
-\paragraph{Generalization về kích thước.}
-Trên GGraph Center, gap tăng vừa phải từ 486 ($+6{,}5\%$) lên 600 ($+9{,}5\%$)
-nhưng tăng mạnh ở 726 ($+27{,}3\%$). Điều này gợi ý ngưỡng kích thước mà
-agent bắt đầu gặp khó khăn khi domain shift quá lớn.
-
-\subsection{Hướng cải tiến}
+Ba nguyên nhân chính khiến ALNS+RL Repair không đảm bảo tính khả thi trên TGraph:
 
 \begin{enumerate}
-  \item \textbf{Thêm local search sau repair}: sau khi RL gán xong, áp dụng
-        local search (node best improvement) để sửa vi phạm còn lại.
-  \item \textbf{Reward shaping}: thêm penalty nặng cho việc tạo ra infeasibility,
-        không chỉ tối thiểu hóa merit.
-  \item \textbf{Deeper RL}: thay Q-learning tuyến tính bằng DQN hoặc Actor-Critic
-        để xử lý state phức tạp hơn.
-  \item \textbf{Train đa dạng}: train trên cả TGraph và GGraph đa dạng hơn
-        thay vì chỉ một loại instance mỗi lần.
+  \item \textbf{Repair node-by-node không toàn cục}: Agent quyết định gán từng
+        node dựa trên trạng thái cục bộ, không biết trước phân bố của các node
+        còn lại trong $R$. Điều này dẫn đến mất cân bằng tích lũy -- các node
+        cuối bị dồn vào territory không phù hợp.
+
+  \item \textbf{Cấu trúc TGraph không đồng nhất}: Mật độ cạnh không đều tạo ra
+        vùng nút dày và vùng nút thưa. Node ở vùng thưa có ít lựa chọn territory
+        lân cận, bị ép vào territory xa. Agent không có cơ chế nhận biết sự không
+        đồng nhất cục bộ này qua 8 đặc trưng tổng hợp.
+
+  \item \textbf{Reward nhiễu}: Phần thưởng $r = M_{\text{trước}} - M_{\text{sau}}$
+        kết hợp cả diameter và infeasibility theo trọng số $\lambda = 0{,}7$.
+        Agent có thể ưu tiên giảm diameter nhanh (reward tức thời cao) dù tạo ra
+        mất cân bằng tải nghiêm trọng (infeasibility tăng từ từ).
+\end{enumerate}
+
+\subsubsection{GGraph -- Tốt hơn TGraph}
+
+Cấu trúc lưới đều đặn tạo ra điều kiện học thuận lợi:
+\begin{itemize}
+  \item \textbf{Đặc trưng khoảng cách có ý nghĩa}: Trên lưới, khoảng cách ngắn
+        nhất xấp xỉ khoảng cách Manhattan, khiến $\bar{d}(v, D_d)$ phản ánh
+        chính xác vị trí hình học. Agent học được rule đơn giản: node gần territory
+        nào thì gán vào territory đó.
+  \item \textbf{Phân bố tải đồng đều}: Trên lưới $n \times n$, node có thuộc tính
+        phân bố đồng đều hơn so với planar graph, giúp đảm bảo cân bằng tải
+        tự nhiên hơn khi gán theo vùng địa lý.
+  \item \textbf{Policy cân bằng tải generalizable}: Trên GGraph, ``gán node vào
+        territory gần nhất còn thiếu tải'' là policy tốt cho mọi depot configuration,
+        giải thích tại sao Inf $\approx 0$ ngay cả khi depot thay đổi.
+\end{itemize}
+
+\subsubsection{Giới hạn Generalization}
+
+Trên GGraph Center, gap tăng từ $+6{,}5\%$ (486 nút) lên $+9{,}5\%$ (600 nút)
+rồi nhảy vọt lên $+27{,}3\%$ (726 nút). Điều này gợi ý rằng agent bắt đầu mất
+khả năng tối ưu diameter khi kích thước tăng $\approx 50\%$ so với tập train.
+Tuy nhiên, tính khả thi (Inf $\approx 0$) vẫn được duy trì, cho thấy hai kỹ năng
+(cân bằng tải và tối ưu diameter) có mức độ generalization khác nhau.
+
+\subsection{Hướng Cải tiến}
+
+\subsubsection{Cải tiến Tức thời (Độ ưu tiên cao)}
+
+\begin{enumerate}
+  \item \textbf{Feasibility penalty}: Thêm penalty lớn vào reward khi gán node
+        làm vi phạm ràng buộc tăng: $r' = r - \beta \cdot \max(0, \Delta G)$,
+        với $\beta \gg 1$.
+
+  \item \textbf{Local search sau repair}: Sau khi RL repair xong, áp dụng một
+        bước local search (node best improvement -- hoán đổi node biên giữa
+        territory lân cận) để sửa vi phạm còn lại trước khi đánh giá merit.
+        Kết hợp này có thể cải thiện đáng kể tính khả thi trên TGraph.
+
+  \item \textbf{Feasibility-first repair}: Ưu tiên gán node vào territory đang
+        thiếu tải (excess âm) trước; chỉ dùng Q-learning để phá vỡ tie giữa
+        các territory cùng mức thiếu tải.
+\end{enumerate}
+
+\subsubsection{Cải tiến Mô hình RL}
+
+\begin{enumerate}
+  \item \textbf{Deep Q-Network (DQN)}: Thay Q-learning tuyến tính bằng mạng
+        neural 2--3 lớp ẩn để xấp xỉ hàm Q phi tuyến, phù hợp với TGraph không
+        đồng nhất.
+
+  \item \textbf{Graph Neural Network (GNN)}: Encode cấu trúc đồ thị vào
+        embedding cho từng node và territory, cho phép agent ``nhìn'' cấu trúc
+        lân cận thay vì chỉ dựa vào 8 đặc trưng tổng hợp.
+
+  \item \textbf{Train đa dạng}: Train đồng thời trên cả ba kích thước
+        (500/600/700 nút cho TGraph, cả ba depot cho GGraph) để agent học policy
+        tổng quát hơn.
 \end{enumerate}
 
 % =================================================================
 \section{Kết luận}
+\label{sec:conclusion}
 % =================================================================
 
-Báo cáo đã trình bày và đánh giá thuật toán ALNS+RL Repair trên bài toán DTDP.
-Kết quả cho thấy:
+Báo cáo đã trình bày, cài đặt và đánh giá thuật toán \textbf{ALNS+RL Repair}
+cho Bài toán Thiết kế Lãnh thổ (DTDP). Phương pháp tích hợp tác nhân Q-learning
+tuyến tính vào giai đoạn repair của ALNS, học chính sách gán node vào territory
+dựa trên vector đặc trưng 8 chiều kết hợp thông tin cân bằng tải, đường kính,
+và vị trí hình học. Thực nghiệm được thực hiện trên 120 instances thuộc hai họ
+benchmark TGraph và GGraph, so sánh với VNS baseline.
+
+\subsection{Kết quả Chính}
+
 \begin{itemize}
-  \item Phương pháp \textbf{khả thi tốt trên GGraph} nhưng \textbf{gặp khó khăn về
-        infeasibility trên TGraph}.
-  \item Chất lượng mục tiêu tổng thể còn thua VNS baseline ($+17{,}9\%$ TGraph,
-        $+15{,}8\%$ GGraph).
-  \item Agent \textbf{generalize tốt về kích thước} khi depot không thay đổi
-        (TGraph, GGraph Center), nhưng \textbf{kém hơn khi loại depot thay đổi}
-        (Corners, Diagonal).
-  \item Tiềm năng: một số instances riêng lẻ ALNS+RL vượt trội VNS, cho thấy
-        hướng RL vào repair có triển vọng nếu được cải tiến thêm.
+  \item \textbf{TGraph}: ALNS+RL Repair gặp khó khăn nghiêm trọng về tính khả thi
+        (Inf $\approx 0{,}21$), thua VNS cả về objective ($+17{,}9\%$) lẫn
+        feasibility ($G = 0$ vs $G \approx 0{,}21$). Nguyên nhân chính là cơ chế
+        repair node-by-node không đảm bảo cân bằng tải toàn cục trên đồ thị
+        không đồng nhất.
+
+  \item \textbf{GGraph}: ALNS+RL Repair đạt tính khả thi tốt hơn VNS ở nhiều
+        nhóm (Inf $\approx 0$). Objective gap vừa phải ở nhóm Center486/600
+        ($+6{,}5$--$9{,}5\%$) -- cạnh tranh tốt với VNS. Một số instances cụ thể
+        ALNS+RL tìm được nghiệm \emph{tốt hơn VNS} (gap âm), xác nhận tiềm năng
+        của hướng tiếp cận.
+
+  \item \textbf{Generalization}: Agent generalize tốt về tính khả thi (Inf $\approx 0$
+        ngay cả khi depot và kích thước thay đổi), nhưng kém hơn về tối ưu diameter
+        khi domain shift lớn (kích thước $+50\%$ hoặc depot hoàn toàn khác).
 \end{itemize}
+
+\subsection{Đóng góp và Hạn chế}
+
+\textbf{Đóng góp:} Framework ALNS+RL Repair được đề xuất lần đầu cho DTDP với
+mô hình Q-learning tuyến tính đơn giản, hiệu quả về tính toán (80 tham số, không
+cần GPU). Thiết kế vector đặc trưng 8 chiều kết hợp thông tin địa lý và cân bằng
+tải có tính interpretable cao. Thực nghiệm toàn diện trên 120 instances với phân
+tích generalization chi tiết.
+
+\textbf{Hạn chế:} Chưa đảm bảo tính khả thi trên TGraph -- hạn chế quan trọng
+nhất cần giải quyết. Mô hình tuyến tính có thể không đủ biểu diễn cho bài toán
+phi tuyến phức tạp. Số vòng lặp train còn hạn chế, agent có thể chưa hội tụ đủ.
+
+\subsection{Hướng Phát triển Tiếp theo}
+
+Dựa trên kết quả thực nghiệm, hướng ưu tiên cao nhất là thêm \textbf{feasibility
+penalty} vào reward và \textbf{local search} sau bước repair để ép agent ưu tiên
+cân bằng tải -- giải quyết trực tiếp điểm yếu lớn nhất trên TGraph.
+Về dài hạn, thay thế Q-learning tuyến tính bằng \textbf{Graph Neural Network}
+sẽ cho phép agent học đặc trưng cấu trúc đồ thị phức tạp hơn, mở ra khả năng
+vượt VNS một cách nhất quán trên cả hai họ benchmark.
 
 % =================================================================
 \appendix
 \section{Kết quả chi tiết TGraph}
+\label{app:tgraph}
 % =================================================================
 
 \begin{longtable}{lccccc}
