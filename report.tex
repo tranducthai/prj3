@@ -1,0 +1,543 @@
+% Compile: pdflatex report.tex  (chạy 2 lần)
+\documentclass[12pt, a4paper]{article}
+
+% ── Encoding & Tiếng Việt ────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+
+% ── Bố cục trang ─────────────────────────────────────────────────
+\usepackage[top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+% ── Toán học ─────────────────────────────────────────────────────
+\usepackage{amsmath, amssymb}
+
+% ── Bảng ─────────────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% ── Hình ảnh ─────────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+% ── Khác ─────────────────────────────────────────────────────────
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{float}
+
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+% ─────────────────────────────────────────────────────────────────
+\begin{document}
+
+% ── Trang bìa ────────────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  % Đặt file logo (vd: logo.png) cùng thư mục với report.tex rồi bỏ comment dòng dưới
+  % \includegraphics[width=3.5cm]{logo.png}\\[0.8cm]
+  {\Large\bfseries TÊN TRƯỜNG ĐẠI HỌC}\\[0.3cm]
+  {\large Khoa Công nghệ Thông tin}\\[3cm]
+
+  \rule{\linewidth}{0.8pt}\\[0.5cm]
+  {\LARGE\bfseries Ứng dụng Học Tăng cường vào Thuật toán\\[0.3cm]
+   Tìm kiếm Lân cận Diện rộng Thích ứng\\[0.3cm]
+   cho Bài toán Thiết kế Lãnh thổ}\\[0.4cm]
+  {\large\itshape Báo cáo Thực nghiệm}\\[0.3cm]
+  \rule{\linewidth}{0.8pt}\\[2.5cm]
+
+  \begin{minipage}{0.48\textwidth}
+    \begin{flushleft}
+      \textbf{Tác giả:}\\[0.2cm]
+      Trần Đức Thái\\
+      \texttt{thaitd@vietnamlab.vn}
+    \end{flushleft}
+  \end{minipage}
+
+  \vfill
+  {\large Tháng 7, 2026}
+\end{titlepage}
+
+% ── Tóm tắt (trang riêng) ────────────────────────────────────────
+\newpage
+\thispagestyle{plain}
+\begin{abstract}
+Báo cáo này trình bày kết quả thực nghiệm của thuật toán \textbf{ALNS kết hợp
+Học Tăng cường dạng Repair (ALNS+RL Repair)} áp dụng cho Bài toán Thiết kế Lãnh thổ
+(District and Territory Design Problem -- DTDP).
+Tác nhân RL sử dụng mô hình Q-learning tuyến tính để học chính sách gán node vào
+territory trong giai đoạn \emph{repair} của Adaptive Large Neighbourhood Search (ALNS).
+Thực nghiệm được thực hiện trên 120 đồ thị thuộc hai họ: TGraph (đồ thị phẳng ngẫu
+nhiên, 500--700 nút) và GGraph (đồ thị lưới $27\!\times\!27$ đến $33\!\times\!33$,
+ba cấu hình depot).
+Kết quả cho thấy ALNS+RL Repair tìm được nghiệm \emph{khả thi hoàn toàn} trên GGraph
+($\text{Infeasibility} \approx 0$) nhưng gặp khó khăn về tính khả thi trên TGraph
+(infeasibility trung bình $\approx 0{,}21$).
+Chất lượng mục tiêu thua VNS baseline khoảng 18\% trên TGraph và 16\% trên GGraph.
+Tác nhân generalize tốt về \emph{tính khả thi} trên GGraph nhưng chưa học được chiến
+lược tối ưu hóa diameter cạnh tranh với VNS.
+\end{abstract}
+
+% ── Mục lục (trang riêng) ────────────────────────────────────────
+\newpage
+\tableofcontents
+\newpage
+
+% =================================================================
+\section{Giới thiệu}
+% =================================================================
+
+Bài toán Thiết kế Lãnh thổ (DTDP) xuất hiện trong nhiều bài toán thực tiễn như
+phân vùng logistics, quản lý hành chính, và thiết kế mạng lưới dịch vụ.
+Mục tiêu là phân hoạch tập nút của một đồ thị thành $k$ lãnh thổ cân bằng, sao
+cho đường kính tối đa trong các lãnh thổ được tối thiểu hóa.
+
+Các thuật toán metaheuristic như Variable Neighbourhood Search (VNS) và Adaptive
+Large Neighbourhood Search (ALNS) đã cho thấy hiệu quả tốt trên bài toán này.
+Báo cáo nghiên cứu liệu \textbf{Học Tăng cường (RL)} có thể cải thiện ALNS bằng
+cách học chính sách sửa chữa nghiệm (repair) thông minh hơn chiến lược greedy
+truyền thống hay không.
+
+Tác nhân RL dùng \emph{Q-learning tuyến tính} để quyết định gán mỗi node bị xóa
+vào territory nào trong quá trình repair, thay vì dùng heuristic greedy cố định.
+Hai họ benchmark được sử dụng:
+\begin{itemize}
+  \item \textbf{TGraph} -- 30 đồ thị phẳng ngẫu nhiên (500, 600, 700 nút).
+  \item \textbf{GGraph} -- 90 đồ thị lưới (486, 600, 726 nút) với ba cấu hình
+        vị trí depot: Center, Corners, Diagonal.
+\end{itemize}
+
+% =================================================================
+\section{Phát biểu Bài toán}
+% =================================================================
+
+\subsection{Định nghĩa DTDP}
+
+Cho đồ thị $G = (V, E)$ với $|V| = n$ nút.
+Mỗi nút $v \in V$ mang các thuộc tính: khối lượng công việc $w_v$, số khách
+hàng $c_v$, và nhu cầu $d_v$.
+DTDP tìm phân hoạch $\Pi = \{D_1, D_2, \ldots, D_k\}$ của $V$ thành $k$ lãnh thổ sao cho:
+
+\begin{enumerate}
+  \item \textbf{Tối thiểu hóa} $F(\Pi) = \max_{j}\,\operatorname{diam}(D_j)$,
+        đường kính lớn nhất trong các lãnh thổ.
+  \item \textbf{Ràng buộc cân bằng}: với mỗi lãnh thổ $D_j$,
+        \[
+          \left|\frac{w(D_j)}{\bar{w}} - 1\right| \leq \delta,
+          \quad \bar{w} = \frac{\sum_v w_v}{k},
+        \]
+        trong đó $\delta = 0{,}05$ là độ lệch cho phép (5\%).
+\end{enumerate}
+
+\subsection{Hàm Merit}
+
+Để cân bằng giữa tối ưu hóa diameter và đảm bảo tính khả thi, hàm merit được
+định nghĩa:
+\[
+  M(\Pi, \lambda) = \lambda \cdot \frac{F(\Pi)}{D_G} + (1-\lambda) \cdot G(\Pi),
+\]
+trong đó $D_G$ là đường kính của toàn đồ thị, $G(\Pi)$ là tổng vi phạm cân
+bằng tải của tất cả các lãnh thổ, và $\lambda = 0{,}7$ là trọng số.
+
+% =================================================================
+\section{Phương pháp}
+% =================================================================
+
+\subsection{Tổng quan ALNS}
+
+Thuật toán ALNS hoạt động theo vòng lặp \textbf{destroy--repair}:
+\begin{enumerate}
+  \item \textbf{Destroy}: xóa $k$ node khỏi nghiệm hiện tại theo một trong ba
+        chiến lược:
+        \begin{itemize}
+          \item \emph{Random}: xóa ngẫu nhiên $k$ node.
+          \item \emph{Worst Diameter}: xóa các node thuộc đường kính lớn nhất
+                và lân cận của chúng.
+          \item \emph{Infeasible}: xóa ngẫu nhiên $k$ node từ territory vi phạm
+                cân bằng nặng nhất.
+        \end{itemize}
+  \item \textbf{Repair}: gán lại các node bị xóa vào các territory.
+  \item \textbf{Chấp nhận}: dùng tiêu chí Simulated Annealing để chấp nhận hoặc
+        từ chối nghiệm mới.
+\end{enumerate}
+
+\subsection{RL trong giai đoạn Repair}
+
+Thay vì dùng heuristic greedy cố định, tác nhân RL học cách gán node vào territory
+tối ưu. Với mỗi node $v$ cần gán, tác nhân quan sát \textbf{vector đặc trưng} mô
+tả trạng thái của từng territory và chọn territory tốt nhất.
+
+\subsubsection{Không gian trạng thái}
+
+Vector trạng thái $s_{v,d}$ mô tả việc gán node $v$ vào territory $d$, gồm 8 đặc trưng:
+\[
+  s_{v,d} = \left[
+    \underbrace{\text{excess}_{d,w},\; \text{excess}_{d,c},\; \text{excess}_{d,q}}_{\text{dư thừa hoạt động (3)}},\;
+    \underbrace{\text{diam}_d / D_G}_{\text{đường kính (1)}},\;
+    \underbrace{w_v/\bar{w},\; c_v/\bar{c},\; q_v/\bar{q}}_{\text{thuộc tính node (3)}},\;
+    \underbrace{\bar{d}(v, D_d)}_{\text{khoảng cách (1)}}
+  \right],
+\]
+trong đó $\text{excess}_{d,a} = (A_{d,a} - \bar{a})/\bar{a}$ là độ dư thừa hoạt động
+$a$ của territory $d$.
+
+\subsubsection{Hành động và phần thưởng}
+
+\textbf{Hành động}: chọn index territory $a \in \{0, 1, \ldots, k-1\}$ để gán node.
+
+\textbf{Phần thưởng}: cải thiện tức thời của hàm merit sau khi gán:
+\[
+  r = M_{\text{trước}} - M_{\text{sau}}.
+\]
+
+\subsubsection{Mô hình Q-learning tuyến tính}
+
+Q-value được xấp xỉ tuyến tính: $Q(s_{v,a}, a) = \mathbf{w}_a^\top s_{v,a}$,
+trong đó mỗi territory $a$ có vector trọng số $\mathbf{w}_a \in \mathbb{R}^8$ riêng.
+
+Cập nhật TD(0):
+\[
+  \mathbf{w}_a \leftarrow \mathbf{w}_a + \alpha \left[
+    r + \gamma \max_{b} Q(s'_{v',b}, b) - Q(s_{v,a}, a)
+  \right] s_{v,a},
+\]
+với learning rate $\alpha = 0{,}01$, discount factor $\gamma = 0{,}9$,
+$\varepsilon$-greedy exploration ($\varepsilon$ giảm từ 1.0 xuống 0.05).
+
+\subsection{Tham số thực nghiệm}
+
+\begin{table}[H]
+  \centering
+  \caption{Tham số ALNS+RL Repair}
+  \begin{tabular}{lll}
+    \toprule
+    Tham số & Giá trị & Ghi chú \\
+    \midrule
+    $\lambda$ & 0{,}7 & Trọng số merit \\
+    $\delta$ & 0{,}05 & Độ lệch cân bằng cho phép \\
+    $k$ (districts) & 10 & Số lãnh thổ \\
+    $k_{\text{remove}}$ & 10 & Số node xóa mỗi bước destroy \\
+    Số vòng lặp ALNS & 300 & Mỗi instance \\
+    $\alpha$ & 0{,}01 & Learning rate \\
+    $\gamma$ & 0{,}90 & Discount factor \\
+    $\varepsilon_{\min}$ & 0{,}05 & Epsilon tối thiểu \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% =================================================================
+\section{Thiết kế Thực nghiệm}
+% =================================================================
+
+\subsection{Tập dữ liệu}
+
+\begin{table}[H]
+  \centering
+  \caption{Tổng quan benchmark}
+  \begin{tabular}{llccc}
+    \toprule
+    Họ & Tập & Kích thước & Instances & Mục đích \\
+    \midrule
+    \multirow{4}{*}{TGraph} & planar500 & 500 nút & 10 & Train + Eval \\
+                             & planar600 & 600 nút & 10 & Eval (size $+$20\%) \\
+                             & planar700 & 700 nút & 10 & Eval (size $+$40\%) \\
+    \midrule
+    \multirow{3}{*}{GGraph 27$\times$27} & Center486   & 486 nút & 10 & Train + Eval \\
+                                          & Corners486  & 486 nút & 10 & Eval (depot mới) \\
+                                          & Diagonal486 & 486 nút & 10 & Eval (depot mới) \\
+    \multirow{3}{*}{GGraph 30$\times$30} & Center600   & 600 nút & 10 & Eval \\
+                                          & Corners600  & 600 nút & 10 & Eval \\
+                                          & Diagonal600 & 600 nút & 10 & Eval \\
+    \multirow{3}{*}{GGraph 33$\times$33} & Center726   & 726 nút & 10 & Eval \\
+                                          & Corners726  & 726 nút & 10 & Eval \\
+                                          & Diagonal726 & 726 nút & 10 & Eval \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Quy trình}
+
+\begin{enumerate}
+  \item \textbf{Training TGraph}: train agent tuần tự trên planar500 G0--G9,
+        tích lũy kiến thức vào model \texttt{model\_tgraph.npz}.
+  \item \textbf{Eval TGraph}: dùng agent đã train, chạy với $\varepsilon =
+        \varepsilon_{\min}$ (greedy thuần) trên 30 instances.
+  \item \textbf{Training GGraph}: train agent trên Center486 G0--G9, lưu vào
+        \texttt{model\_ggraph.npz}.
+  \item \textbf{Eval GGraph}: đánh giá 90 instances (3 kích thước $\times$
+        3 depot $\times$ 10 instances).
+\end{enumerate}
+
+% =================================================================
+\section{Kết quả}
+% =================================================================
+
+\subsection{TGraph -- Đồ thị phẳng ngẫu nhiên}
+
+\begin{table}[H]
+  \centering
+  \caption{Kết quả tổng hợp TGraph (trung bình 10 instances)}
+  \begin{tabular}{lcccccc}
+    \toprule
+    \multirow{2}{*}{Nhóm} &
+    \multicolumn{2}{c}{ALNS+RL Repair} &
+    \multicolumn{2}{c}{VNS Baseline} &
+    \multirow{2}{*}{Gap Obj} &
+    \multirow{2}{*}{Nhận xét} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}
+    & Obj & Inf & Obj & Inf & & \\
+    \midrule
+    planar500 & 54{,}296 & 0{,}2351 & 47{,}641 & 0{,}0000 & $+$14{,}0\% & In-dist \\
+    planar600 & 54{,}729 & 0{,}1967 & 47{,}709 & 0{,}0000 & $+$14{,}7\% & Size $+$20\% \\
+    planar700 & 57{,}633 & 0{,}1890 & 46{,}016 & 0{,}0000 & $+$25{,}2\% & Size $+$40\% \\
+    \midrule
+    \textbf{Tổng} & \textbf{55{,}553} & \textbf{0{,}2069} & \textbf{47{,}122} &
+    \textbf{0{,}0000} & \textbf{$+$17{,}9\%} & \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Nhận xét:}
+\begin{itemize}
+  \item ALNS+RL Repair có infeasibility trung bình $\approx 0{,}21$, trong khi VNS
+        luôn tìm được nghiệm \emph{khả thi hoàn toàn} ($G = 0$).
+        Đây là điểm yếu nghiêm trọng của phương pháp đề xuất trên TGraph.
+  \item Objective gap tăng theo kích thước đồ thị: $+14\%$ (500 nút) $\to$
+        $+25{,}2\%$ (700 nút), cho thấy agent \emph{không generalize tốt} khi
+        graph lớn hơn trên TGraph.
+  \item Nguyên nhân có thể do cơ chế repair dạng node-by-node không đảm bảo
+        tính liên thông và cân bằng tải đồng thời khi graph có cấu trúc phức tạp.
+\end{itemize}
+
+\subsection{GGraph -- Đồ thị lưới}
+
+\begin{table}[H]
+  \centering
+  \caption{Kết quả tổng hợp GGraph (trung bình 10 instances mỗi nhóm)}
+  \begin{tabular}{llccccl}
+    \toprule
+    Kích thước & Depot &
+    \multicolumn{2}{c}{ALNS+RL} &
+    \multicolumn{2}{c}{VNS} &
+    Gap \\
+    \cmidrule(lr){3-4}\cmidrule(lr){5-6}
+    & & Obj & Inf & Obj & Inf & Obj \\
+    \midrule
+    \multirow{3}{*}{27$\times$27 (486)} &
+    Center   & 233{,}0 & 0{,}0000 & 218{,}8 & 0{,}0000 & $+$6{,}5\% \\
+    & Corners  & 254{,}2 & 0{,}0010 & 201{,}7 & 0{,}0074 & $+$26{,}0\% \\
+    & Diagonal & 247{,}0 & 0{,}0000 & 199{,}6 & 0{,}0319 & $+$23{,}7\% \\
+    \midrule
+    \multirow{3}{*}{30$\times$30 (600)} &
+    Center   & 260{,}9 & 0{,}0000 & 238{,}3 & 0{,}0001 & $+$9{,}5\% \\
+    & Corners  & 260{,}1 & 0{,}0000 & 216{,}9 & 0{,}0016 & $+$19{,}9\% \\
+    & Diagonal & 274{,}8 & 0{,}0039 & 241{,}8 & 0{,}0082 & $+$13{,}6\% \\
+    \midrule
+    \multirow{3}{*}{33$\times$33 (726)} &
+    Center   & 306{,}2 & 0{,}0004 & 240{,}5 & 0{,}0008 & $+$27{,}3\% \\
+    & Corners  & 285{,}0 & 0{,}0010 & 249{,}9 & 0{,}0032 & $+$14{,}0\% \\
+    & Diagonal & 299{,}7 & 0{,}0000 & 282{,}0 & 0{,}0199 & $+$6{,}3\% \\
+    \midrule
+    \multicolumn{2}{l}{\textbf{Tổng (90 instances)}} &
+    \textbf{269{,}0} & \textbf{0{,}0007} & \textbf{232{,}2} & \textbf{0{,}0081} &
+    \textbf{$+$15{,}8\%} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Nhận xét:}
+\begin{itemize}
+  \item \textbf{Tính khả thi}: ALNS+RL Repair gần như luôn tìm được nghiệm khả thi
+        trên GGraph (infeasibility $\approx 0$), thậm chí tốt hơn VNS ở một số nhóm
+        (Corners486, Diagonal486, Diagonal600, Diagonal726 có infeasibility VNS cao hơn).
+  \item \textbf{Depot trung tâm (Center)}: gap thấp nhất, $+6{,}5\%$ (486 nút) và
+        $+9{,}5\%$ (600 nút) -- cho thấy agent generalize tốt về kích thước
+        khi cấu hình depot giống tập train.
+  \item \textbf{Depot không quen (Corners, Diagonal)}: gap cao hơn ($+14$--$+26\%$),
+        đặc biệt Corners486 ($+26\%$) và Center726 ($+27{,}3\%$).
+        Agent chưa học được cách xử lý depot ở vị trí cực trị hiệu quả.
+  \item Một số instances riêng lẻ ALNS+RL \emph{tốt hơn} VNS (gap âm),
+        ví dụ Center486\_G0 ($-6$), Center486\_G2 ($-13$), Diagonal726\_G3 ($-48$).
+\end{itemize}
+
+% =================================================================
+\section{Thảo luận}
+% =================================================================
+
+\subsection{So sánh với VNS}
+
+\begin{table}[H]
+  \centering
+  \caption{Tổng hợp so sánh ALNS+RL Repair vs VNS}
+  \begin{tabular}{lccc}
+    \toprule
+    Tiêu chí & ALNS+RL Repair & VNS & Nhận xét \\
+    \midrule
+    Tính khả thi -- TGraph & \textcolor{red}{Kém} (Inf $\approx 0{,}21$) &
+    \textcolor{blue}{Tốt} (Inf $= 0$) & VNS tốt hơn \\
+    Tính khả thi -- GGraph & \textcolor{blue}{Tốt} (Inf $\approx 0$) &
+    \textcolor{blue}{Tốt} & Tương đương \\
+    Objective -- TGraph & $+17{,}9\%$ tệ hơn & Baseline & VNS tốt hơn \\
+    Objective -- GGraph Center & $+6{,}5$--$9{,}5\%$ tệ hơn & Baseline & Cạnh tranh \\
+    Objective -- GGraph Cross & $+13{,}6$--$27{,}3\%$ tệ hơn & Baseline & VNS tốt hơn \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Phân tích nguyên nhân}
+
+\paragraph{TGraph -- infeasibility cao.}
+Cơ chế repair node-by-node không có cơ chế đảm bảo tính cân bằng tải toàn cục.
+Mỗi lần gán, agent tối ưu hóa merit cục bộ nhưng không nhìn xa được hậu quả
+của toàn bộ quá trình repair. Trên TGraph với cấu trúc không đều, điều này dẫn
+đến mất cân bằng tích lũy.
+
+\paragraph{GGraph -- tốt hơn TGraph.}
+Cấu trúc lưới đều đặn của GGraph giúp agent dễ học pattern gán node hơn.
+Node trong lưới có vị trí hình học rõ ràng, khiến các đặc trưng khoảng cách
+và excess trong state vector trở nên có ý nghĩa hơn.
+
+\paragraph{Generalization về kích thước.}
+Trên GGraph Center, gap tăng vừa phải từ 486 ($+6{,}5\%$) lên 600 ($+9{,}5\%$)
+nhưng tăng mạnh ở 726 ($+27{,}3\%$). Điều này gợi ý ngưỡng kích thước mà
+agent bắt đầu gặp khó khăn khi domain shift quá lớn.
+
+\subsection{Hướng cải tiến}
+
+\begin{enumerate}
+  \item \textbf{Thêm local search sau repair}: sau khi RL gán xong, áp dụng
+        local search (node best improvement) để sửa vi phạm còn lại.
+  \item \textbf{Reward shaping}: thêm penalty nặng cho việc tạo ra infeasibility,
+        không chỉ tối thiểu hóa merit.
+  \item \textbf{Deeper RL}: thay Q-learning tuyến tính bằng DQN hoặc Actor-Critic
+        để xử lý state phức tạp hơn.
+  \item \textbf{Train đa dạng}: train trên cả TGraph và GGraph đa dạng hơn
+        thay vì chỉ một loại instance mỗi lần.
+\end{enumerate}
+
+% =================================================================
+\section{Kết luận}
+% =================================================================
+
+Báo cáo đã trình bày và đánh giá thuật toán ALNS+RL Repair trên bài toán DTDP.
+Kết quả cho thấy:
+\begin{itemize}
+  \item Phương pháp \textbf{khả thi tốt trên GGraph} nhưng \textbf{gặp khó khăn về
+        infeasibility trên TGraph}.
+  \item Chất lượng mục tiêu tổng thể còn thua VNS baseline ($+17{,}9\%$ TGraph,
+        $+15{,}8\%$ GGraph).
+  \item Agent \textbf{generalize tốt về kích thước} khi depot không thay đổi
+        (TGraph, GGraph Center), nhưng \textbf{kém hơn khi loại depot thay đổi}
+        (Corners, Diagonal).
+  \item Tiềm năng: một số instances riêng lẻ ALNS+RL vượt trội VNS, cho thấy
+        hướng RL vào repair có triển vọng nếu được cải tiến thêm.
+\end{itemize}
+
+% =================================================================
+\appendix
+\section{Kết quả chi tiết TGraph}
+% =================================================================
+
+\begin{longtable}{lccccc}
+  \caption{Kết quả từng instance TGraph} \\
+  \toprule
+  Instance & ALNS Obj & ALNS Inf & VNS Obj & VNS Inf & $\Delta$ Obj \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Instance & ALNS Obj & ALNS Inf & VNS Obj & VNS Inf & $\Delta$ Obj \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  planar500\_G0 & 52{,}592 & 0{,}1779 & 46{,}111 & 0{,}0000 & $+$6{,}48 \\
+  planar500\_G1 & 52{,}378 & 0{,}1786 & 45{,}341 & 0{,}0000 & $+$7{,}04 \\
+  planar500\_G2 & 64{,}797 & 0{,}1835 & 49{,}825 & 0{,}0000 & $+$14{,}97 \\
+  planar500\_G3 & 64{,}218 & 0{,}4112 & 48{,}767 & 0{,}0000 & $+$15{,}45 \\
+  planar500\_G4 & 52{,}138 & 0{,}2180 & 45{,}008 & 0{,}0000 & $+$7{,}13 \\
+  planar500\_G5 & 50{,}198 & 0{,}1564 & 47{,}548 & 0{,}0000 & $+$2{,}65 \\
+  planar500\_G6 & 50{,}251 & 0{,}2364 & 47{,}225 & 0{,}0000 & $+$3{,}03 \\
+  planar500\_G7 & 50{,}970 & 0{,}3479 & 48{,}005 & 0{,}0000 & $+$2{,}96 \\
+  planar500\_G8 & 53{,}337 & 0{,}1623 & 49{,}316 & 0{,}0000 & $+$4{,}02 \\
+  planar500\_G9 & 52{,}080 & 0{,}2785 & 49{,}263 & 0{,}0000 & $+$2{,}82 \\
+  \midrule
+  planar600\_G0 & 51{,}886 & 0{,}0509 & 45{,}523 & 0{,}0000 & $+$6{,}36 \\
+  planar600\_G1 & 53{,}974 & 0{,}1068 & 50{,}656 & 0{,}0000 & $+$3{,}32 \\
+  planar600\_G2 & 56{,}591 & 0{,}1498 & 44{,}752 & 0{,}0000 & $+$11{,}84 \\
+  planar600\_G3 & 53{,}876 & 0{,}2718 & 47{,}073 & 0{,}0000 & $+$6{,}80 \\
+  planar600\_G4 & 52{,}564 & 0{,}2855 & 47{,}281 & 0{,}0000 & $+$5{,}28 \\
+  planar600\_G5 & 56{,}406 & 0{,}2920 & 48{,}253 & 0{,}0000 & $+$8{,}15 \\
+  planar600\_G6 & 54{,}664 & 0{,}1802 & 49{,}483 & 0{,}0000 & $+$5{,}18 \\
+  planar600\_G7 & 60{,}130 & 0{,}1217 & 49{,}206 & 0{,}0000 & $+$10{,}92 \\
+  planar600\_G8 & 55{,}234 & 0{,}1793 & 46{,}365 & 0{,}0000 & $+$8{,}87 \\
+  planar600\_G9 & 51{,}964 & 0{,}3286 & 48{,}493 & 0{,}0000 & $+$3{,}47 \\
+  \midrule
+  planar700\_G0 & 58{,}625 & 0{,}2217 & 46{,}472 & 0{,}0000 & $+$12{,}15 \\
+  planar700\_G1 & 58{,}179 & 0{,}1123 & 44{,}097 & 0{,}0000 & $+$14{,}08 \\
+  planar700\_G2 & 50{,}747 & 0{,}0795 & 44{,}817 & 0{,}0000 & $+$5{,}93 \\
+  planar700\_G3 & 55{,}636 & 0{,}1540 & 46{,}603 & 0{,}0000 & $+$9{,}03 \\
+  planar700\_G4 & 67{,}832 & 0{,}3059 & 46{,}419 & 0{,}0000 & $+$21{,}41 \\
+  planar700\_G5 & 63{,}709 & 0{,}3066 & 45{,}209 & 0{,}0000 & $+$18{,}50 \\
+  planar700\_G6 & 57{,}558 & 0{,}2162 & 49{,}892 & 0{,}0000 & $+$7{,}67 \\
+  planar700\_G7 & 52{,}436 & 0{,}2234 & 44{,}879 & 0{,}0000 & $+$7{,}56 \\
+  planar700\_G8 & 55{,}607 & 0{,}1521 & 45{,}113 & 0{,}0000 & $+$10{,}49 \\
+  planar700\_G9 & 56{,}006 & 0{,}1185 & 46{,}656 & 0{,}0000 & $+$9{,}35 \\
+\end{longtable}
+
+% =================================================================
+\section{Kết quả chi tiết GGraph}
+% =================================================================
+
+\begin{longtable}{lccccc}
+  \caption{Kết quả từng instance GGraph 27$\times$27 (486 nút)} \\
+  \toprule
+  Instance & ALNS Obj & ALNS Inf & VNS Obj & VNS Inf & $\Delta$ Obj \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Instance & ALNS Obj & ALNS Inf & VNS Obj & VNS Inf & $\Delta$ Obj \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  Center486\_G0 & 195 & 0{,}0000 & 201 & 0{,}0000 & $-$6 \\
+  Center486\_G1 & 259 & 0{,}0000 & 268 & 0{,}0000 & $-$9 \\
+  Center486\_G2 & 270 & 0{,}0000 & 283 & 0{,}0000 & $-$13 \\
+  Center486\_G3 & 227 & 0{,}0000 & 222 & 0{,}0000 & $+$5 \\
+  Center486\_G4 & 236 & 0{,}0000 & 175 & 0{,}0000 & $+$61 \\
+  Center486\_G5 & 202 & 0{,}0000 & 172 & 0{,}0000 & $+$30 \\
+  Center486\_G6 & 232 & 0{,}0000 & 212 & 0{,}0000 & $+$20 \\
+  Center486\_G7 & 258 & 0{,}0000 & 210 & 0{,}0000 & $+$48 \\
+  Center486\_G8 & 224 & 0{,}0000 & 194 & 0{,}0000 & $+$30 \\
+  Center486\_G9 & 227 & 0{,}0000 & 251 & 0{,}0000 & $-$24 \\
+  \midrule
+  Corners486\_G0  & 277 & 0{,}0000 & 219 & 0{,}0000 & $+$58 \\
+  Corners486\_G1  & 190 & 0{,}0000 & 183 & 0{,}0000 & $+$7 \\
+  Corners486\_G2  & 203 & 0{,}0000 & 186 & 0{,}0000 & $+$17 \\
+  Corners486\_G3  & 191 & 0{,}0000 & 167 & 0{,}0000 & $+$24 \\
+  Corners486\_G4  & 273 & 0{,}0000 & 223 & 0{,}0119 & $+$50 \\
+  Corners486\_G5  & 371 & 0{,}0000 & 252 & 0{,}0000 & $+$119 \\
+  Corners486\_G6  & 315 & 0{,}0000 & 202 & 0{,}0000 & $+$113 \\
+  Corners486\_G7  & 182 & 0{,}0099 & 174 & 0{,}0521 & $+$8 \\
+  Corners486\_G8  & 244 & 0{,}0000 & 219 & 0{,}0101 & $+$25 \\
+  Corners486\_G9  & 296 & 0{,}0000 & 192 & 0{,}0000 & $+$104 \\
+  \midrule
+  Diagonal486\_G0 & 347 & 0{,}0000 & 211 & 0{,}0197 & $+$136 \\
+  Diagonal486\_G1 & 211 & 0{,}0000 & 232 & 0{,}0624 & $-$21 \\
+  Diagonal486\_G2 & 230 & 0{,}0000 & 182 & 0{,}0736 & $+$48 \\
+  Diagonal486\_G3 & 223 & 0{,}0000 & 195 & 0{,}0277 & $+$28 \\
+  Diagonal486\_G4 & 270 & 0{,}0000 & 220 & 0{,}0077 & $+$50 \\
+  Diagonal486\_G5 & 296 & 0{,}0000 & 190 & 0{,}0059 & $+$106 \\
+  Diagonal486\_G6 & 294 & 0{,}0000 & 199 & 0{,}0633 & $+$95 \\
+  Diagonal486\_G7 & 171 & 0{,}0000 & 196 & 0{,}0300 & $-$25 \\
+  Diagonal486\_G8 & 174 & 0{,}0000 & 172 & 0{,}0000 & $+$2 \\
+  Diagonal486\_G9 & 254 & 0{,}0000 & 199 & 0{,}0289 & $+$55 \\
+\end{longtable}
+
+\end{document}

@@ -1,11 +1,11 @@
 [
     {
-        "label": "sys",
+        "label": "os",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "sys",
-        "description": "sys",
-        "detail": "sys",
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
         "documentation": {}
     },
     {
@@ -27,45 +27,12 @@
         "documentation": {}
     },
     {
-        "label": "random,",
+        "label": "random",
         "kind": 6,
         "isExtraImport": true,
-        "importPath": "random.",
-        "description": "random.",
-        "detail": "random.",
-        "documentation": {}
-    },
-    {
-        "label": "stats",
-        "importPath": "scipy",
-        "description": "scipy",
-        "isExtraImport": true,
-        "detail": "scipy",
-        "documentation": {}
-    },
-    {
-        "label": "TerritoryDesignProblem",
-        "importPath": "DTDPAlgorithms",
-        "description": "DTDPAlgorithms",
-        "isExtraImport": true,
-        "detail": "DTDPAlgorithms",
-        "documentation": {}
-    },
-    {
-        "label": "activities",
-        "importPath": "DTDPAlgorithms",
-        "description": "DTDPAlgorithms",
-        "isExtraImport": true,
-        "detail": "DTDPAlgorithms",
-        "documentation": {}
-    },
-    {
-        "label": "itertools",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "itertools",
-        "description": "itertools",
-        "detail": "itertools",
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
         "documentation": {}
     },
     {
@@ -78,40 +45,6 @@
         "documentation": {}
     },
     {
-        "label": "random",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "random",
-        "description": "random",
-        "detail": "random",
-        "documentation": {}
-    },
-    {
-        "label": "bisect",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "bisect",
-        "description": "bisect",
-        "detail": "bisect",
-        "documentation": {}
-    },
-    {
-        "label": "deque",
-        "importPath": "collections",
-        "description": "collections",
-        "isExtraImport": true,
-        "detail": "collections",
-        "documentation": {}
-    },
-    {
-        "label": "linear_sum_assignment",
-        "importPath": "scipy.optimize",
-        "description": "scipy.optimize",
-        "isExtraImport": true,
-        "detail": "scipy.optimize",
-        "documentation": {}
-    },
-    {
         "label": "time",
         "kind": 6,
         "isExtraImport": true,
@@ -121,98 +54,11 @@
         "documentation": {}
     },
     {
-        "label": "logging",
-        "kind": 6,
+        "label": "stats",
+        "importPath": "scipy",
+        "description": "scipy",
         "isExtraImport": true,
-        "importPath": "logging",
-        "description": "logging",
-        "detail": "logging",
-        "documentation": {}
-    },
-    {
-        "label": "torch",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "torch",
-        "description": "torch",
-        "detail": "torch",
-        "documentation": {}
-    },
-    {
-        "label": "torch.nn",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "torch.nn",
-        "description": "torch.nn",
-        "detail": "torch.nn",
-        "documentation": {}
-    },
-    {
-        "label": "torch.optim",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "torch.optim",
-        "description": "torch.optim",
-        "detail": "torch.optim",
-        "documentation": {}
-    },
-    {
-        "label": "os,",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os.",
-        "description": "os.",
-        "detail": "os.",
-        "documentation": {}
-    },
-    {
-        "label": "TerritoryDesignProblem",
-        "importPath": "rl",
-        "description": "rl",
-        "isExtraImport": true,
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "BVNS",
-        "importPath": "rl",
-        "description": "rl",
-        "isExtraImport": true,
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "TerritoryDesignProblem",
-        "importPath": "rl",
-        "description": "rl",
-        "isExtraImport": true,
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "BVNS",
-        "importPath": "rl",
-        "description": "rl",
-        "isExtraImport": true,
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "os",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
-        "documentation": {}
-    },
-    {
-        "label": "json",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "json",
-        "description": "json",
-        "detail": "json",
+        "detail": "scipy",
         "documentation": {}
     },
     {
@@ -319,7 +165,7 @@
         "kind": 2,
         "importPath": "alns_rl_repair",
         "description": "alns_rl_repair",
-        "peekOfCode": "def alns_rl_repair(tdp, n_iterations=300, k_remove=10,\n                   T_init=0.05, T_decay=0.995, lam=0.4, seed=42):\n    random.seed(seed); np.random.seed(seed)\n    current_sol, current_act = build_initial(tdp, lam)\n    current_F, current_G = compute_FG(current_sol, current_act, tdp)\n    current_m = merit(current_F, current_G, tdp, lam)\n    best_sol = copy.deepcopy(current_sol)\n    best_F, best_G, best_m = current_F, current_G, current_m\n    # precompute mu\n    g = tdp.graph_input",
+        "peekOfCode": "def alns_rl_repair(tdp, agent=None, n_iterations=300, k_remove=10,\n                   T_init=0.05, T_decay=0.995, lam=0.4, seed=42, train=True):\n    random.seed(seed); np.random.seed(seed)\n    current_sol, current_act = build_initial(tdp, lam)\n    current_F, current_G = compute_FG(current_sol, current_act, tdp)\n    current_m = merit(current_F, current_G, tdp, lam)\n    best_sol = copy.deepcopy(current_sol)\n    best_F, best_G, best_m = current_F, current_G, current_m\n    mu = tdp.totalAverageAct  # precomputed by TerritoryDesignProblem\n    n_features = len(activities)*2 + 2",
         "detail": "alns_rl_repair",
         "documentation": {}
     },
@@ -337,7 +183,7 @@
         "kind": 2,
         "importPath": "alns_rl_repair",
         "description": "alns_rl_repair",
-        "peekOfCode": "def run_experiment(graph_path, n_iterations=300, k_remove=10,\n                   lam=0.4, delta=0.05, n_runs=10):\n    G = nx.read_graphml(graph_path)\n    rl_obj, rl_inf, rl_time = [], [], []\n    gr_obj, gr_inf, gr_time = [], [], []\n    for run in range(n_runs):\n        seed = run * 17\n        tdp = TerritoryDesignProblem(G, delta=delta, llambda=lam,\n                                      rcl_parameter=0.2, nr_districts=10)\n        t0 = time.time()",
+        "peekOfCode": "def run_experiment(graph_path, n_iterations=300, k_remove=10,\n                   lam=0.4, delta=0.05, n_runs=10):\n    from dtdp import TerritoryDesignProblem\n    G = nx.read_graphml(graph_path)\n    rl_obj, rl_inf, rl_time = [], [], []\n    gr_obj, gr_inf, gr_time = [], [], []\n    for run in range(n_runs):\n        seed = run * 17\n        tdp = TerritoryDesignProblem(G, delta=delta, llambda=lam,\n                                      rcl_parameter=0.2, nr_districts=10)",
         "detail": "alns_rl_repair",
         "documentation": {}
     },
@@ -360,6 +206,15 @@
         "documentation": {}
     },
     {
+        "label": "activities",
+        "kind": 5,
+        "importPath": "alns_rl_repair",
+        "description": "alns_rl_repair",
+        "peekOfCode": "activities = [\"workload\", \"n_customers\", \"demand\"]\n# ─────────────────────────────────────────────\n# DESTROY OPERATORS\n# ─────────────────────────────────────────────\ndef destroy_random(solution, district_act, tdp, k):\n    removed, sol, act = [], copy.deepcopy(solution), copy.deepcopy(district_act)\n    all_nodes = [(n,d) for d,nodes in sol.items() for n in nodes]\n    for node, dist in random.sample(all_nodes, min(k, len(all_nodes))):\n        sol[dist].remove(node)\n        for a in activities: act[dist][a] -= tdp.graph_input.nodes[node][a]",
+        "detail": "alns_rl_repair",
+        "documentation": {}
+    },
+    {
         "label": "DESTROY_OPS",
         "kind": 5,
         "importPath": "alns_rl_repair",
@@ -371,172 +226,19 @@
     {
         "label": "TerritoryDesignProblem",
         "kind": 6,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "class TerritoryDesignProblem:\n    \"\"\"\n    A class representing the territory design problem.\n    Parameters:\n    -----------\n    graph_input : networkx.Graph\n        A graph representing the road network.\n    delta : float\n        A value used for calculating infeasibility.\n    llambda : float",
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "PR",
-        "kind": 6,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "class PR:\n    def __init__(self, tdp_instance, i_max, elite_set_length):\n        self.tdpInstance = tdp_instance\n        self.elite_set_length = elite_set_length\n        self.i_max = i_max\n        self.eliteSolutions = []\n        for i in range(self.elite_set_length):\n            self.tdpInstance.centers_depots = self.tdpInstance.select_centroids()\n            incumbent_objective, incumbent_infeasibility, incumbent_solution = (\n                self.tdpInstance.constructDistricts()[:3]",
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "BVNS",
-        "kind": 6,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "class BVNS:\n    \"\"\"\n    Class implementing the Basic Variable Neighborhood Search algorithm for solving the TDP (Traveling District Problem).\n    Parameters:\n    -----------\n    tdp_instance : TDP instance object\n        An instance of the TDP problem.\n    shaking_steps : int\n        The maximum number of shaking steps allowed in the BVNS algorithm.\n    fail_max : int",
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "DQN",
-        "kind": 6,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "class DQN(nn.Module):\n    def __init__(self, state_dim, action_dim):\n        super().__init__()\n        self.net = nn.Sequential(\n            nn.Linear(state_dim, 64),\n            nn.ReLU(),\n            nn.Linear(64, action_dim),\n        )\n    def forward(self, x):\n        return self.net(x)",
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "RLAgent",
-        "kind": 6,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "class RLAgent:\n    def __init__(self, state_dim, action_dim):\n        self.model = DQN(state_dim, action_dim)\n        self.target = DQN(state_dim, action_dim)\n        self.optimizer = optim.Adam(self.model.parameters(), lr=1e-3)\n        self.memory = deque(maxlen=5000)\n        self.gamma = 0.95\n        self.target.load_state_dict(self.model.state_dict())\n        self.update_counter = 0\n        self.update_target_every = 200",
-        "detail": "rl",
+        "importPath": "dtdp",
+        "description": "dtdp",
+        "peekOfCode": "class TerritoryDesignProblem:\n    def __init__(self, graph_input, delta, llambda, rcl_parameter, nr_districts=10):\n        self.graph_input = graph_input\n        self.delta = delta\n        self.llambda = llambda\n        self.rcl_parameter = rcl_parameter\n        self.nodes = list(graph_input.nodes())\n        getFurthestNodesResponse = self.get_furthest_nodes()\n        self.shortest_paths_dict = getFurthestNodesResponse[\"node_shortest_path_dicts\"]\n        self.graph_diameter = getFurthestNodesResponse[\"diameter\"]",
+        "detail": "dtdp",
         "documentation": {}
     },
     {
         "label": "activities",
         "kind": 5,
-        "importPath": "rl",
-        "description": "rl",
-        "peekOfCode": "activities = [\"workload\", \"n_customers\", \"demand\"]\nclass TerritoryDesignProblem:\n    \"\"\"\n    A class representing the territory design problem.\n    Parameters:\n    -----------\n    graph_input : networkx.Graph\n        A graph representing the road network.\n    delta : float\n        A value used for calculating infeasibility.",
-        "detail": "rl",
-        "documentation": {}
-    },
-    {
-        "label": "make_tdp",
-        "kind": 2,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "def make_tdp(G):\n    return TerritoryDesignProblem(\n        graph_input=G, delta=DELTA, llambda=LMBDA,\n        rcl_parameter=0.2, nr_districts=10\n    )\ndef make_bvns(tdp):\n    return BVNS(tdp_instance=tdp, shaking_steps=25,\n                fail_max=50, nrInitSolutions=50)\ndef run_instance(file_path, instance_name, save_dir, train=False):\n    t0 = time.time()",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "make_bvns",
-        "kind": 2,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "def make_bvns(tdp):\n    return BVNS(tdp_instance=tdp, shaking_steps=25,\n                fail_max=50, nrInitSolutions=50)\ndef run_instance(file_path, instance_name, save_dir, train=False):\n    t0 = time.time()\n    G   = nx.read_graphml(file_path)\n    tdp = make_tdp(G)\n    bvns = make_bvns(tdp)\n    bvns.agent.load(MODEL_PATH)\n    obj_hist, inf_hist, best_solution, _ = bvns.performBVNS(train_agent=train)",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "run_instance",
-        "kind": 2,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "def run_instance(file_path, instance_name, save_dir, train=False):\n    t0 = time.time()\n    G   = nx.read_graphml(file_path)\n    tdp = make_tdp(G)\n    bvns = make_bvns(tdp)\n    bvns.agent.load(MODEL_PATH)\n    obj_hist, inf_hist, best_solution, _ = bvns.performBVNS(train_agent=train)\n    if train:\n        bvns.agent.save(MODEL_PATH)\n    elapsed = time.time() - t0",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "load_json",
-        "kind": 2,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "def load_json(p):\n    return json.load(open(p)) if os.path.exists(p) else None\n# Planar\nfor sz in [500, 600]:\n    for i in range(10):\n        name = f\"planar{sz}_G{i}\"\n        rl  = load_json(f\"{PLANAR_DIR}/{name}.json\")\n        vns = load_json(f\"Results/VNSExperiments/{name}_vns.json\")\n        if rl and vns:\n            diff = rl['Objective'] - vns['Objective']",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "MODEL_PATH",
-        "kind": 5,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "MODEL_PATH = \"rl_model.pt\"\nLMBDA      = 0.7\nDELTA      = 0.05\nPLANAR_DIR  = \"Results/MyExperiments\"\nGGRAPH_DIR  = \"Results/MyExperimentsGeneral/27x27Graphs\"\nos.makedirs(PLANAR_DIR, exist_ok=True)\nos.makedirs(GGRAPH_DIR, exist_ok=True)\n# delete stale model (was trained with llambda=0.4)\nif os.path.exists(MODEL_PATH):\n    os.remove(MODEL_PATH)",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "planar_instances",
-        "kind": 5,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "planar_instances = [\n    (f\"planar{sz}_G{i}\", f\"TGraphInstances/planar{sz}_G{i}.graphml\")\n    for sz in [500, 600] for i in range(10)\n    if os.path.exists(f\"TGraphInstances/planar{sz}_G{i}.graphml\")\n]\nfor idx, (name, fp) in enumerate(planar_instances):\n    print(f\"  [{idx+1}/{len(planar_instances)}] {name} ...\", end=\" \", flush=True)\n    r, el = run_instance(fp, name, PLANAR_DIR, train=False)\n    print(f\"Obj={r['Objective']:.3f}  Inf={r['Infeasibility']:.4f}  {el:.0f}s\")\n# ─── Phase 3: Eval GGraph ────────────────────────────────────────",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "GBASE",
-        "kind": 5,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "GBASE = \"GGraphInstances/newGeneratedInstances/27x27Graphs\"\nggraph_instances = [\n    (f\"{tp}_G{i}\", f\"{GBASE}/{tp}_G{i}.graphml\")\n    for tp in [\"Center486\", \"Corners486\", \"Diagonal486\"]\n    for i in range(10)\n    if os.path.exists(f\"{GBASE}/{tp}_G{i}.graphml\")\n]\nfor idx, (name, fp) in enumerate(ggraph_instances):\n    print(f\"  [{idx+1}/{len(ggraph_instances)}] {name} ...\", end=\" \", flush=True)\n    r, el = run_instance(fp, name, GGRAPH_DIR, train=False)",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "ggraph_instances",
-        "kind": 5,
-        "importPath": "run_all",
-        "description": "run_all",
-        "peekOfCode": "ggraph_instances = [\n    (f\"{tp}_G{i}\", f\"{GBASE}/{tp}_G{i}.graphml\")\n    for tp in [\"Center486\", \"Corners486\", \"Diagonal486\"]\n    for i in range(10)\n    if os.path.exists(f\"{GBASE}/{tp}_G{i}.graphml\")\n]\nfor idx, (name, fp) in enumerate(ggraph_instances):\n    print(f\"  [{idx+1}/{len(ggraph_instances)}] {name} ...\", end=\" \", flush=True)\n    r, el = run_instance(fp, name, GGRAPH_DIR, train=False)\n    print(f\"Obj={r['Objective']:.3f}  Inf={r['Infeasibility']:.4f}  {el:.0f}s\")",
-        "detail": "run_all",
-        "documentation": {}
-    },
-    {
-        "label": "MODEL_PATH",
-        "kind": 5,
-        "importPath": "run_experiment",
-        "description": "run_experiment",
-        "peekOfCode": "MODEL_PATH = \"rl_model.pt\"\nRESULTS_DIR = \"Results/MyExperiments\"\nos.makedirs(RESULTS_DIR, exist_ok=True)\n# ─── Phase 1: Train ──────────────────────────────────────────────\nprint(\"=\" * 55)\nprint(\"PHASE 1: TRAINING on planar500 (10 instances)\")\nprint(\"=\" * 55)\nfor i in range(10):\n    instance_name = f\"planar500_G{i}\"\n    file_path = f\"TGraphInstances/{instance_name}.graphml\"",
-        "detail": "run_experiment",
-        "documentation": {}
-    },
-    {
-        "label": "RESULTS_DIR",
-        "kind": 5,
-        "importPath": "run_experiment",
-        "description": "run_experiment",
-        "peekOfCode": "RESULTS_DIR = \"Results/MyExperiments\"\nos.makedirs(RESULTS_DIR, exist_ok=True)\n# ─── Phase 1: Train ──────────────────────────────────────────────\nprint(\"=\" * 55)\nprint(\"PHASE 1: TRAINING on planar500 (10 instances)\")\nprint(\"=\" * 55)\nfor i in range(10):\n    instance_name = f\"planar500_G{i}\"\n    file_path = f\"TGraphInstances/{instance_name}.graphml\"\n    t0 = time.time()",
-        "detail": "run_experiment",
-        "documentation": {}
-    },
-    {
-        "label": "sizes",
-        "kind": 5,
-        "importPath": "run_experiment",
-        "description": "run_experiment",
-        "peekOfCode": "sizes = [500, 600]\ntotal = sum(\n    1 for size in sizes for i in range(10)\n    if os.path.exists(f\"TGraphInstances/planar{size}_G{i}.graphml\")\n)\ndone = 0\nfor size in sizes:\n    for i in range(10):\n        instance_name = f\"planar{size}_G{i}\"\n        file_path = f\"TGraphInstances/{instance_name}.graphml\"",
-        "detail": "run_experiment",
-        "documentation": {}
-    },
-    {
-        "label": "total",
-        "kind": 5,
-        "importPath": "run_experiment",
-        "description": "run_experiment",
-        "peekOfCode": "total = sum(\n    1 for size in sizes for i in range(10)\n    if os.path.exists(f\"TGraphInstances/planar{size}_G{i}.graphml\")\n)\ndone = 0\nfor size in sizes:\n    for i in range(10):\n        instance_name = f\"planar{size}_G{i}\"\n        file_path = f\"TGraphInstances/{instance_name}.graphml\"\n        if not os.path.exists(file_path):",
-        "detail": "run_experiment",
-        "documentation": {}
-    },
-    {
-        "label": "done",
-        "kind": 5,
-        "importPath": "run_experiment",
-        "description": "run_experiment",
-        "peekOfCode": "done = 0\nfor size in sizes:\n    for i in range(10):\n        instance_name = f\"planar{size}_G{i}\"\n        file_path = f\"TGraphInstances/{instance_name}.graphml\"\n        if not os.path.exists(file_path):\n            print(f\"  [SKIP] {instance_name}\")\n            continue\n        done += 1\n        print(f\"  [{done}/{total}] {instance_name} ...\", end=\" \", flush=True)",
-        "detail": "run_experiment",
+        "importPath": "dtdp",
+        "description": "dtdp",
+        "peekOfCode": "activities = [\"workload\", \"n_customers\", \"demand\"]\nclass TerritoryDesignProblem:\n    def __init__(self, graph_input, delta, llambda, rcl_parameter, nr_districts=10):\n        self.graph_input = graph_input\n        self.delta = delta\n        self.llambda = llambda\n        self.rcl_parameter = rcl_parameter\n        self.nodes = list(graph_input.nodes())\n        getFurthestNodesResponse = self.get_furthest_nodes()\n        self.shortest_paths_dict = getFurthestNodesResponse[\"node_shortest_path_dicts\"]",
+        "detail": "dtdp",
         "documentation": {}
     }
 ]

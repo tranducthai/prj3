@@ -7,14 +7,15 @@ RL được dùng trong REPAIR phase:
   - Reward: cải thiện merit sau mỗi lần gán
 """
 
-import sys
-sys.path.append('/home/claude/TerritoryDesign')
-
+import os
 import networkx as nx
 import numpy as np
-import random, copy, time
+import random
+import copy
+import time
 from scipy import stats
-from DTDPAlgorithms import TerritoryDesignProblem, activities
+
+activities = ["workload", "n_customers", "demand"]
 
 # ─────────────────────────────────────────────
 # DESTROY OPERATORS
@@ -174,6 +175,17 @@ class RepairAgent:
     def decay_epsilon(self):
         self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
 
+    def save(self, path):
+        np.savez(path, W=self.W, epsilon=np.array([self.epsilon]))
+
+    def load(self, path):
+        if os.path.exists(path):
+            data = np.load(path)
+            self.W       = data['W']
+            self.epsilon = float(data['epsilon'][0])
+            return True
+        return False
+
 # ─────────────────────────────────────────────
 # RL REPAIR
 # ─────────────────────────────────────────────
@@ -265,8 +277,8 @@ def repair_greedy(solution, district_act, removed_nodes, tdp, lam):
 # ALNS + RL REPAIR
 # ─────────────────────────────────────────────
 
-def alns_rl_repair(tdp, n_iterations=300, k_remove=10,
-                   T_init=0.05, T_decay=0.995, lam=0.4, seed=42):
+def alns_rl_repair(tdp, agent=None, n_iterations=300, k_remove=10,
+                   T_init=0.05, T_decay=0.995, lam=0.4, seed=42, train=True):
     random.seed(seed); np.random.seed(seed)
 
     current_sol, current_act = build_initial(tdp, lam)
@@ -276,14 +288,13 @@ def alns_rl_repair(tdp, n_iterations=300, k_remove=10,
     best_sol = copy.deepcopy(current_sol)
     best_F, best_G, best_m = current_F, current_G, current_m
 
-    # precompute mu
-    g = tdp.graph_input
-    mu = {a: sum(g.nodes[n][a] for n in g.nodes) / tdp.nr_districts for a in activities}
+    mu = tdp.totalAverageAct  # precomputed by TerritoryDesignProblem
 
-    n_features = len(activities)*2 + 2   # = 8
-    agent = RepairAgent(n_features=n_features, n_actions=tdp.nr_districts,
-                        alpha=0.01, gamma=0.9, epsilon=1.0,
-                        epsilon_min=0.05, epsilon_decay=0.995)
+    n_features = len(activities)*2 + 2
+    if agent is None:
+        agent = RepairAgent(n_features=n_features, n_actions=tdp.nr_districts,
+                            alpha=0.01, gamma=0.9, epsilon=1.0,
+                            epsilon_min=0.05, epsilon_decay=0.995)
 
     T = T_init
     history = {'obj': [], 'inf': [], 'reward': []}
@@ -292,8 +303,9 @@ def alns_rl_repair(tdp, n_iterations=300, k_remove=10,
         op = random.choice(DESTROY_OPS)
         new_sol, new_act, removed = op(current_sol, current_act, tdp, k_remove)
         new_sol, new_act, transitions = repair_rl(
-            new_sol, new_act, removed, tdp, lam, agent, mu, train=True)
-        agent.decay_epsilon()
+            new_sol, new_act, removed, tdp, lam, agent, mu, train=train)
+        if train:
+            agent.decay_epsilon()
 
         new_F, new_G = compute_FG(new_sol, new_act, tdp)
         new_m = merit(new_F, new_G, tdp, lam)
@@ -356,6 +368,7 @@ def alns_greedy_repair(tdp, n_iterations=300, k_remove=10,
 
 def run_experiment(graph_path, n_iterations=300, k_remove=10,
                    lam=0.4, delta=0.05, n_runs=10):
+    from dtdp import TerritoryDesignProblem
     G = nx.read_graphml(graph_path)
     rl_obj, rl_inf, rl_time = [], [], []
     gr_obj, gr_inf, gr_time = [], [], []
@@ -437,8 +450,8 @@ def analyze_weights(agent, name):
 
 
 if __name__ == '__main__':
-    import os
-    base = '/home/claude/TerritoryDesign'
+    from dtdp import TerritoryDesignProblem
+    base = os.path.dirname(os.path.abspath(__file__))
 
     instances = {
         'T-500':   'TGraphInstances/planar500_G0.graphml',
@@ -461,7 +474,6 @@ if __name__ == '__main__':
         print("done")
         print_result(res, name)
 
-        # lưu agent từ run cuối của instance này để phân tích
         G = nx.read_graphml(full)
         tdp = TerritoryDesignProblem(G, delta=0.05, llambda=0.4,
                                       rcl_parameter=0.2, nr_districts=10)
